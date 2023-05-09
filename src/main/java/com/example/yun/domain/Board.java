@@ -27,6 +27,10 @@ public class Board {
         this.content = content;
     }
 
+    // 테스트 목적 setId
+    public void setId(Long id) {
+        this.id = id;
+    }
     public void updateTitle(String title) {
         this.title = title;
     }

@@ -1,15 +1,16 @@
-package com.example.yun.dto;
+package com.example.yun.error;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class BoardRequestDto {
+public class ErrorResult {
 
-    private String title;
-    private String content;
+    private HttpStatus httpStatus;
+    private String message;
 }

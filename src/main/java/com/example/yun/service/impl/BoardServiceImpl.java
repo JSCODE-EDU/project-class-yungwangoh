@@ -11,10 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static java.util.Optional.*;
-import static java.util.stream.Collectors.*;
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +36,8 @@ public class BoardServiceImpl implements BoardService {
 
         Board save = boardRepository.save(board);
 
+        log.info("save = {}", save);
+
         return new BoardResponseDto(save);
     }
 
@@ -47,6 +48,8 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardResponseDto> boardAllSearch() {
         List<Board> boards = boardRepository.findAll();
+
+        log.info("boards = {}", boards);
 
         return boards.stream().map(BoardResponseDto::new)
                 .collect(toList());
@@ -60,6 +63,8 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardResponseDto boardSearch(Long id) {
         Optional<Board> board = getBoard(id);
+
+        log.info("board = {}", board.get());
 
         return new BoardResponseDto(getBoard(board));
     }
@@ -75,9 +80,13 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto boardUpdateTitle(Long id, String title) {
         Optional<Board> board = getBoard(id);
 
+        log.info("board = {}", board.get());
+
         getBoard(board).updateTitle(title);
 
         Optional<Board> updateBoard = getBoard(id);
+
+        log.info("update title board = {}", updateBoard.get());
 
         return new BoardResponseDto(getBoard(updateBoard));
     }
@@ -93,9 +102,13 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto boardUpdateContent(Long id, String content) {
         Optional<Board> board = getBoard(id);
 
+        log.info("board = {}", board.get());
+
         getBoard(board).updateContent(content);
 
         Optional<Board> updateContent = getBoard(id);
+
+        log.info("update content board = {}", updateContent.get());
 
         return new BoardResponseDto(getBoard(updateContent));
     }
@@ -110,9 +123,9 @@ public class BoardServiceImpl implements BoardService {
 
         Optional<Board> board = getBoard(id);
 
+        log.info("board = {}", board.get());
+
         boardRepository.delete(getBoard(board));
-
-
     }
 
     /**
