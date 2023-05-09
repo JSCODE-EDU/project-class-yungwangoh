@@ -1,6 +1,6 @@
 package com.example.yun.service.impl;
 
-import com.example.yun.domain.Board;
+import com.example.yun.domain.board.Board;
 import com.example.yun.dto.BoardRequestDto;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;

@@ -27,4 +27,10 @@ public interface BoardService {
     }
 
     default void boardDelete(Long id) {}
+
+    default List<BoardResponseDto> boardAllSearchBySort() { return null; }
+
+    default List<BoardResponseDto> boardAllSearchByKeyword(String keyword) {
+        return null;
+    }
 }

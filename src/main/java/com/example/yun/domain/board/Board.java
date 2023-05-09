@@ -1,5 +1,6 @@
-package com.example.yun.domain;
+package com.example.yun.domain.board;
 
+import com.example.yun.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.Stack;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Board {
+public class Board extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;

@@ -1,6 +1,6 @@
 package com.example.yun.dto;
 
-import com.example.yun.domain.Board;
+import com.example.yun.domain.board.Board;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;

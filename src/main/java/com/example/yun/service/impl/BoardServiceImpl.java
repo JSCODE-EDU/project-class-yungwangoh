@@ -1,8 +1,9 @@
 package com.example.yun.service.impl;
 
-import com.example.yun.domain.Board;
+import com.example.yun.domain.board.Board;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.repository.BoardRepository;
+import com.example.yun.repository.querydsl.BoardQueryRepository;
 import com.example.yun.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import static java.util.stream.Collectors.toList;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
+    private final BoardQueryRepository boardQueryRepository;
 
     /**
      * 게시물 등록
@@ -126,6 +128,31 @@ public class BoardServiceImpl implements BoardService {
         log.info("board = {}", board.get());
 
         boardRepository.delete(getBoard(board));
+    }
+
+    /**
+     * 시간순 내림차순 정렬하여 모든 게시물 출력 (최대 100개)
+     * @return 게시물 응답 리스트 (id, title, content)
+     */
+    @Override
+    public List<BoardResponseDto> boardAllSearchBySort() {
+        List<Board> boards = boardQueryRepository.boardAllSearchBySort();
+
+        return boards.stream().map(BoardResponseDto::new)
+                .collect(toList());
+    }
+
+    /**
+     * 키워드로 검색 시간순으로 내림차순 정렬하여 모든 게시물 출력 (최대 100개)
+     * @param keyword 검색 키워드
+     * @return 게시물 응답 리스트 (id, title, content)
+     */
+    @Override
+    public List<BoardResponseDto> boardAllSearchByKeyword(String keyword) {
+        List<Board> boards = boardQueryRepository.boardSearchByKeyword(keyword);
+
+        return boards.stream().map(BoardResponseDto::new)
+                .collect(toList());
     }
 
     /**

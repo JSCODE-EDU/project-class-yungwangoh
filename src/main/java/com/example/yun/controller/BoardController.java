@@ -42,6 +42,14 @@ public class BoardController {
         return new ResponseEntity<>(boardResponseDto, OK);
     }
 
+    @GetMapping("/api/keyword")
+    ResponseEntity<List<BoardResponseDto>> boardAllSearchByKeywordApi(@RequestParam("keyword") String keyword) {
+
+        List<BoardResponseDto> boardResponseDtos = boardService.boardAllSearchByKeyword(keyword);
+
+        return new ResponseEntity<>(boardResponseDtos, OK);
+    }
+
     @GetMapping("/api")
     ResponseEntity<List<BoardResponseDto>> boardAllSearchApi() {
 
