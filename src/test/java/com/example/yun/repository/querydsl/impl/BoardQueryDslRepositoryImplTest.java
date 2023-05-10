@@ -34,18 +34,13 @@ class BoardQueryDslRepositoryImplTest {
         @BeforeEach
         void init() {
             jpaQueryFactory = new JPAQueryFactory(em);
-
-            Board board = new Board("안녕", "안녕하세요");
-            em.persist(board);
-
-            Board board1 = new Board("안녕하세요", "안녕하세요");
-            em.persist(board1);
         }
 
         @Test
         @DisplayName("게시물을 검색할 때에 등록 시간 순으로 정렬하고 최대 100개까지 조회")
         void boardSearchBySort() {
             // given
+            boardListInit();
 
             // when
             List<Board> boards = jpaQueryFactory.selectFrom(board)
@@ -54,7 +49,7 @@ class BoardQueryDslRepositoryImplTest {
                     .fetch();
 
             // then
-            assertThat(boards.size()).isEqualTo(2);
+            assertThat(boards.size()).isEqualTo(100);
         }
 
         @Test
@@ -62,6 +57,7 @@ class BoardQueryDslRepositoryImplTest {
         void boardSearchByKeyword() {
             // given
             String keyword = "안녕";
+            boardListInit();
 
             // when
             List<Board> boards = jpaQueryFactory.selectFrom(board)
@@ -71,7 +67,14 @@ class BoardQueryDslRepositoryImplTest {
                     .fetch();
 
             // then
-            assertThat(boards.size()).isEqualTo(2);
+            assertThat(boards.size()).isEqualTo(100);
+        }
+
+        void boardListInit() {
+            for(int i = 0; i < 101; i++) {
+                Board board = new Board("안녕", "안녕하세요");
+                em.persist(board);
+            }
         }
     }
 }

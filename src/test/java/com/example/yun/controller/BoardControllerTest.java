@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -55,7 +56,8 @@ class BoardControllerTest {
 
             // then
             resultActions.andExpect(status().isCreated())
-                    .andDo(print());
+                    .andExpect(jsonPath("$.title").value(boardRequestDto.getTitle()))
+                    .andExpect(jsonPath("$.content").value(boardRequestDto.getContent()));
         }
 
         @Nested
@@ -83,7 +85,8 @@ class BoardControllerTest {
 
                 // then
                 resultActions.andExpect(status().isOk())
-                        .andDo(print());
+                        .andExpect(jsonPath("$.[0].title").value(boardResponseDto.getTitle()))
+                        .andExpect(jsonPath("$.[0].content").value(boardResponseDto.getContent()));
             }
 
             @Test
@@ -97,7 +100,24 @@ class BoardControllerTest {
 
                 // then
                 resultActions.andExpect(status().isOk())
-                        .andDo(print());
+                        .andExpect(jsonPath("$.title").value(boardResponseDto.getTitle()))
+                        .andExpect(jsonPath("$.content").value(boardResponseDto.getContent()));
+            }
+
+            @Test
+            @DisplayName("키워드로 검색한 게시물")
+            void searchBoardByKeywordApiTest() throws Exception {
+                // given
+                String keyword = "안녕";
+
+                // when
+                ResultActions resultActions = mockMvc.perform(get("/api/keyword")
+                        .param("keyword", keyword));
+
+                // then
+                resultActions.andExpect(status().isOk())
+                        .andExpect(jsonPath("$.[0].title").value(boardResponseDto.getTitle()))
+                        .andExpect(jsonPath("$.[0].content").value(boardResponseDto.getContent()));
             }
 
             @AfterEach
@@ -136,7 +156,8 @@ class BoardControllerTest {
 
                 // then
                 resultActions.andExpect(status().isOk())
-                        .andDo(print());
+                        .andExpect(jsonPath("$.id").value(boardTitleUpdateDto.getId()))
+                        .andExpect(jsonPath("$.title").value(boardTitleUpdateDto.getTitle()));
             }
 
             @Test
@@ -156,7 +177,8 @@ class BoardControllerTest {
 
                 // then
                 resultActions.andExpect(status().isOk())
-                        .andDo(print());
+                        .andExpect(jsonPath("$.id").value(boardContentUpdateDto.getId()))
+                        .andExpect(jsonPath("$.content").value(boardContentUpdateDto.getContent()));
             }
 
             @AfterEach

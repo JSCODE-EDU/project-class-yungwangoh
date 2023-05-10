@@ -26,7 +26,7 @@ public interface BoardService {
         return null;
     }
 
-    default void boardDelete(Long id) {}
+    default String boardDelete(Long id) { return null; }
 
     default List<BoardResponseDto> boardAllSearchBySort() { return null; }
 

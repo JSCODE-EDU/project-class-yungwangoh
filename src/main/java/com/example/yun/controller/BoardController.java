@@ -81,12 +81,12 @@ public class BoardController {
     }
 
     @DeleteMapping("/api/{boardId}")
-    ResponseEntity<Void> boardDeleteApi(@PathVariable Long boardId) {
+    ResponseEntity<String> boardDeleteApi(@PathVariable Long boardId) {
 
         log.info("board id = {}", boardId);
 
-        boardService.boardDelete(boardId);
+        String boardDelete = boardService.boardDelete(boardId);
 
-        return new ResponseEntity<>(NO_CONTENT);
+        return new ResponseEntity<>(boardDelete, NO_CONTENT);
     }
 }

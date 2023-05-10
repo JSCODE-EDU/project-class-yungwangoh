@@ -4,6 +4,7 @@ import com.example.yun.domain.board.Board;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.repository.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
+import com.example.yun.service.BoardMessage;
 import com.example.yun.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -121,13 +122,15 @@ public class BoardServiceImpl implements BoardService {
      */
     @Override
     @Transactional
-    public void boardDelete(Long id) {
+    public String boardDelete(Long id) {
 
         Optional<Board> board = getBoard(id);
 
         log.info("board = {}", board.get());
 
         boardRepository.delete(getBoard(board));
+
+        return BoardMessage.BOARD_DELETE_SUCCESS;
     }
 
     /**
