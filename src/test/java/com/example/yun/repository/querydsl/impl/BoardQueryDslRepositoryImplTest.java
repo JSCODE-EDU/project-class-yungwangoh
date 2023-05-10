@@ -1,8 +1,6 @@
 package com.example.yun.repository.querydsl.impl;
 
 import com.example.yun.domain.board.Board;
-import com.example.yun.repository.BoardRepository;
-import com.example.yun.repository.querydsl.BoardQueryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

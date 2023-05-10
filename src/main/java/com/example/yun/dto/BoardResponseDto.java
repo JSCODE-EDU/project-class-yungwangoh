@@ -13,9 +13,13 @@ public class BoardResponseDto {
     private String title;
     private String content;
 
-    public BoardResponseDto(Board board) {
-        this.id = board.getId();
-        this.title = board.getTitle();
-        this.content = board.getContent();
+    public BoardResponseDto(Long id, String title, String content) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+    }
+
+    public static BoardResponseDto of(Board board) {
+        return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent());
     }
 }

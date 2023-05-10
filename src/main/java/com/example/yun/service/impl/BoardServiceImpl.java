@@ -41,7 +41,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("save = {}", save);
 
-        return new BoardResponseDto(save);
+        return BoardResponseDto.of(save);
     }
 
     /**
@@ -54,8 +54,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("boards = {}", boards);
 
-        return boards.stream().map(BoardResponseDto::new)
-                .collect(toList());
+        return getBoardResponseDtos(boards);
     }
 
     /**
@@ -69,7 +68,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("board = {}", board.get());
 
-        return new BoardResponseDto(getBoard(board));
+        return BoardResponseDto.of(getBoard(board));
     }
 
     /**
@@ -91,7 +90,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("update title board = {}", updateBoard.get());
 
-        return new BoardResponseDto(getBoard(updateBoard));
+        return BoardResponseDto.of(getBoard(updateBoard));
     }
 
     /**
@@ -113,7 +112,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("update content board = {}", updateContent.get());
 
-        return new BoardResponseDto(getBoard(updateContent));
+        return BoardResponseDto.of(getBoard(updateContent));
     }
 
     /**
@@ -141,8 +140,7 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponseDto> boardAllSearchBySort() {
         List<Board> boards = boardQueryRepository.boardAllSearchBySort();
 
-        return boards.stream().map(BoardResponseDto::new)
-                .collect(toList());
+        return getBoardResponseDtos(boards);
     }
 
     /**
@@ -154,8 +152,7 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponseDto> boardAllSearchByKeyword(String keyword) {
         List<Board> boards = boardQueryRepository.boardSearchByKeyword(keyword);
 
-        return boards.stream().map(BoardResponseDto::new)
-                .collect(toList());
+        return getBoardResponseDtos(boards);
     }
 
     /**
@@ -175,5 +172,15 @@ public class BoardServiceImpl implements BoardService {
      */
     private static Board getBoard(Optional<Board> board) {
         return board.get();
+    }
+
+    /**
+     * board list -> boardResponseDto list mapping
+     * @param boards 게시물 리스트
+     * @return 게시물 응답 리스트
+     */
+    private static List<BoardResponseDto> getBoardResponseDtos(List<Board> boards) {
+        return boards.stream().map(BoardResponseDto::of)
+                .collect(toList());
     }
 }

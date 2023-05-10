@@ -202,7 +202,7 @@ class BoardControllerTest {
             }
 
             @Test
-            @DisplayName("삭제")
+            @DisplayName("게시물 삭제")
             void boardDeleteApiTest() throws Exception {
                 // given
                 Long id = boardResponseDto.getId();
