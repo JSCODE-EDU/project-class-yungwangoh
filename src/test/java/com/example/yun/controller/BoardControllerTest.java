@@ -35,7 +35,7 @@ class BoardControllerTest {
 
 
     @Nested
-    @DisplayName("게시물")
+    @DisplayName("성공")
     class Success {
 
         @Test
@@ -213,6 +213,54 @@ class BoardControllerTest {
                 // then
                 resultActions.andExpect(status().isNoContent())
                         .andDo(print());
+            }
+        }
+
+        @AfterEach
+        void initDB() {
+            boardRepository.deleteAll();
+        }
+    }
+
+    @Nested
+    @DisplayName("실패")
+    class Failed {
+
+        @Nested
+        @DisplayName("유효성 검사")
+        class Validated {
+            @Test
+            @DisplayName("공백 or 빈칸")
+            void validationEmptyFailed() throws Exception {
+                // given
+                BoardRequestDto boardRequestDto = new BoardRequestDto("", " ");
+                String s = objectMapper.writeValueAsString(boardRequestDto);
+
+                // when
+                ResultActions resultActions = mockMvc.perform(post("/api")
+                        .content(s)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+                // then (expect => ConstraintViolationException) status -> 400
+                resultActions.andExpect(status().isBadRequest());
+            }
+
+            @Test
+            @DisplayName("request Dto id 값 누락")
+            void validationNoIdFailed() throws Exception {
+                // given
+                BoardTitleUpdateDto boardTitleUpdateDto = new BoardTitleUpdateDto(null, "하이");
+                String s = objectMapper.writeValueAsString(boardTitleUpdateDto);
+
+                // when
+                ResultActions resultActions = mockMvc.perform(patch("/api/title")
+                        .content(s)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+                // then (expect => ConstraintViolationException) status -> 400
+                resultActions.andExpect(status().isBadRequest());
             }
         }
 
