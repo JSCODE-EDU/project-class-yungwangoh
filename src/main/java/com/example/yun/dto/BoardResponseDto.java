@@ -19,7 +19,7 @@ public class BoardResponseDto {
         this.content = content;
     }
 
-    public static BoardResponseDto of(Board board) {
+    public static BoardResponseDto from(Board board) {
         return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent());
     }
 }
