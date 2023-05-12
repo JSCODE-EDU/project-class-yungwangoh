@@ -49,7 +49,7 @@ class BoardControllerTest {
             String s = objectMapper.writeValueAsString(boardRequestDto);
 
             // when
-            ResultActions resultActions = mockMvc.perform(post("/api")
+            ResultActions resultActions = mockMvc.perform(post("/api/boards")
                     .content(s)
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON));
@@ -81,12 +81,13 @@ class BoardControllerTest {
                 int size = 1;
 
                 // when
-                ResultActions resultActions = mockMvc.perform(get("/api"));
+                ResultActions resultActions = mockMvc.perform(get("/api/boards"));
 
                 // then
                 resultActions.andExpect(status().isOk())
                         .andExpect(jsonPath("$.[0].title").value(boardResponseDto.getTitle()))
-                        .andExpect(jsonPath("$.[0].content").value(boardResponseDto.getContent()));
+                        .andExpect(jsonPath("$.[0].content").value(boardResponseDto.getContent()))
+                        .andDo(print());
             }
 
             @Test
@@ -96,7 +97,7 @@ class BoardControllerTest {
                 Long id = boardResponseDto.getId();
 
                 // when
-                ResultActions resultActions = mockMvc.perform(get("/api/{boardId}", id));
+                ResultActions resultActions = mockMvc.perform(get("/api/boards/{boardId}", id));
 
                 // then
                 resultActions.andExpect(status().isOk())
@@ -111,13 +112,14 @@ class BoardControllerTest {
                 String keyword = "안녕";
 
                 // when
-                ResultActions resultActions = mockMvc.perform(get("/api/keyword")
+                ResultActions resultActions = mockMvc.perform(get("/api/boards/keyword")
                         .param("keyword", keyword));
 
                 // then
                 resultActions.andExpect(status().isOk())
                         .andExpect(jsonPath("$.[0].title").value(boardResponseDto.getTitle()))
-                        .andExpect(jsonPath("$.[0].content").value(boardResponseDto.getContent()));
+                        .andExpect(jsonPath("$.[0].content").value(boardResponseDto.getContent()))
+                        .andDo(print());
             }
 
             @AfterEach
@@ -149,7 +151,7 @@ class BoardControllerTest {
                 String s = objectMapper.writeValueAsString(boardTitleUpdateDto);
 
                 // when
-                ResultActions resultActions = mockMvc.perform(patch("/api/title")
+                ResultActions resultActions = mockMvc.perform(patch("/api/boards/title")
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -170,7 +172,7 @@ class BoardControllerTest {
                 String s = objectMapper.writeValueAsString(boardContentUpdateDto);
 
                 // when
-                ResultActions resultActions = mockMvc.perform(patch("/api/content")
+                ResultActions resultActions = mockMvc.perform(patch("/api/boards/content")
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -208,7 +210,7 @@ class BoardControllerTest {
                 Long id = boardResponseDto.getId();
 
                 // when
-                ResultActions resultActions = mockMvc.perform(delete("/api/{boardId}", id));
+                ResultActions resultActions = mockMvc.perform(delete("/api/boards/{boardId}", id));
 
                 // then
                 resultActions.andExpect(status().isNoContent())
@@ -237,7 +239,7 @@ class BoardControllerTest {
                 String s = objectMapper.writeValueAsString(boardRequestDto);
 
                 // when
-                ResultActions resultActions = mockMvc.perform(post("/api")
+                ResultActions resultActions = mockMvc.perform(post("/api/boards")
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -254,12 +256,31 @@ class BoardControllerTest {
                 String s = objectMapper.writeValueAsString(boardTitleUpdateDto);
 
                 // when
-                ResultActions resultActions = mockMvc.perform(patch("/api/title")
+                ResultActions resultActions = mockMvc.perform(patch("/api/boards/title")
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
                 // then (expect => ConstraintViolationException) status -> 400
+                resultActions.andExpect(status().isBadRequest());
+            }
+
+            @Test
+            @DisplayName("요구하는 문자열 길이를 넘어가는 경우 (제목의 길이는 15자 이하이다.)")
+            void validationOverLength() throws Exception {
+                // given
+                String overTitle = "aldfjghfjdkshgjghfdkghkjfdhgkfdgfd";
+                String content = "ㅎㅇ";
+                BoardRequestDto boardRequestDto = new BoardRequestDto(overTitle, content);
+                String s = objectMapper.writeValueAsString(boardRequestDto);
+
+                // when
+                ResultActions resultActions = mockMvc.perform(post("/api/boards")
+                        .content(s)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+                // then
                 resultActions.andExpect(status().isBadRequest());
             }
         }

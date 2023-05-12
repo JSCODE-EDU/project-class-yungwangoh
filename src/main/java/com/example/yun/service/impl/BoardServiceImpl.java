@@ -54,7 +54,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("boards = {}", boards);
 
-        return getBoardResponseDtos(boards);
+        return BoardResponseDto.responseDtosCreate(boards);
     }
 
     /**
@@ -140,7 +140,7 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponseDto> boardAllSearchBySort() {
         List<Board> boards = boardQueryRepository.boardAllSearchBySort();
 
-        return getBoardResponseDtos(boards);
+        return BoardResponseDto.responseDtosCreate(boards);
     }
 
     /**
@@ -152,7 +152,7 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponseDto> boardAllSearchByKeyword(String keyword) {
         List<Board> boards = boardQueryRepository.boardSearchByKeyword(keyword);
 
-        return getBoardResponseDtos(boards);
+        return BoardResponseDto.responseDtosCreate(boards);
     }
 
     /**
@@ -172,15 +172,5 @@ public class BoardServiceImpl implements BoardService {
      */
     private static Board getBoard(Optional<Board> board) {
         return board.get();
-    }
-
-    /**
-     * board list -> boardResponseDto list mapping
-     * @param boards 게시물 리스트
-     * @return 게시물 응답 리스트
-     */
-    private static List<BoardResponseDto> getBoardResponseDtos(List<Board> boards) {
-        return boards.stream().map(BoardResponseDto::from)
-                .collect(toList());
     }
 }

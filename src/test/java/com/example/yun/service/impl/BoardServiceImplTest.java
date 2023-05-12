@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -207,9 +208,7 @@ class BoardServiceImplTest {
 
                 given(boardRepository.findById(id)).willThrow(IllegalArgumentException.class);
 
-                // when
-
-                // then > 존재하지 않은 id를 조회할 경우 에러
+                // when + then > 존재하지 않은 id를 조회할 경우 에러
                 assertThrows(IllegalArgumentException.class, () -> {
                     boardService.boardSearch(id);
                 });

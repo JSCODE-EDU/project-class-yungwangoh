@@ -19,11 +19,12 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardService boardService;
 
-    @PostMapping("/api")
+    @PostMapping("")
     ResponseEntity<BoardResponseDto> boardCreateApi(@RequestBody @Valid final BoardRequestDto boardRequestDto) {
 
         log.info("board request dto = {} ", boardRequestDto);
@@ -34,7 +35,7 @@ public class BoardController {
         return new ResponseEntity<>(boardResponseDto, CREATED);
     }
 
-    @GetMapping("/api/{boardId}")
+    @GetMapping("/{boardId}")
     ResponseEntity<BoardResponseDto> boardSearchApi(@PathVariable @NotNull final Long boardId) {
 
         log.info("board id = {}", boardId);
@@ -44,7 +45,7 @@ public class BoardController {
         return new ResponseEntity<>(boardResponseDto, OK);
     }
 
-    @GetMapping("/api/keyword")
+    @GetMapping("/keyword")
     ResponseEntity<List<BoardResponseDto>> boardAllSearchByKeywordApi(@RequestParam("keyword") final String keyword) {
 
         List<BoardResponseDto> boardResponseDtos = boardService.boardAllSearchByKeyword(keyword);
@@ -52,7 +53,7 @@ public class BoardController {
         return new ResponseEntity<>(boardResponseDtos, OK);
     }
 
-    @GetMapping("/api")
+    @GetMapping("")
     ResponseEntity<List<BoardResponseDto>> boardAllSearchApi() {
 
         List<BoardResponseDto> boardResponseDtos = boardService.boardAllSearch();
@@ -60,7 +61,7 @@ public class BoardController {
         return new ResponseEntity<>(boardResponseDtos, OK);
     }
 
-    @PatchMapping("/api/title")
+    @PatchMapping("/title")
     ResponseEntity<BoardResponseDto> boardTitleUpdateApi(@RequestBody @Valid final BoardTitleUpdateDto boardTitleUpdateDto) {
 
         log.info("board title update dto = {}", boardTitleUpdateDto);
@@ -71,7 +72,7 @@ public class BoardController {
         return new ResponseEntity<>(boardResponseDto, OK);
     }
 
-    @PatchMapping("/api/content")
+    @PatchMapping("/content")
     ResponseEntity<BoardResponseDto> boardContentUpdateApi(@RequestBody @Valid final BoardContentUpdateDto boardContentUpdateDto) {
 
         log.info("board content update dto = {}", boardContentUpdateDto);
@@ -82,7 +83,7 @@ public class BoardController {
         return new ResponseEntity<>(boardResponseDto, OK);
     }
 
-    @DeleteMapping("/api/{boardId}")
+    @DeleteMapping("/{boardId}")
     ResponseEntity<String> boardDeleteApi(@PathVariable @NotNull final Long boardId) {
 
         log.info("board id = {}", boardId);
