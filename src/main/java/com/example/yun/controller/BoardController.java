@@ -5,6 +5,9 @@ import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
 import com.example.yun.service.BoardService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -25,6 +29,13 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("")
+    @Operation(summary = "게시물 등록", description = "게시물을 등록 한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     ResponseEntity<BoardResponseDto> boardCreateApi(@RequestBody @Valid final BoardRequestDto boardRequestDto) {
 
         log.info("board request dto = {} ", boardRequestDto);
@@ -36,6 +47,13 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
+    @Operation(summary = "게시물 찾기", description = "게시물 id를 통해 특정 게시물을 찾는다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     ResponseEntity<BoardResponseDto> boardSearchApi(@PathVariable @NotNull final Long boardId) {
 
         log.info("board id = {}", boardId);
@@ -46,6 +64,13 @@ public class BoardController {
     }
 
     @GetMapping("/keyword")
+    @Operation(summary = "게시물 찾기", description = "키워드를 통해 특정 게시물을 찾는다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     ResponseEntity<List<BoardResponseDto>> boardAllSearchByKeywordApi(@RequestParam("keyword") final String keyword) {
 
         List<BoardResponseDto> boardResponseDtos = boardService.boardAllSearchByKeyword(keyword);
@@ -54,6 +79,11 @@ public class BoardController {
     }
 
     @GetMapping("")
+    @Operation(summary = "전체 게시물 조회", description = "전체 게시물을 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     ResponseEntity<List<BoardResponseDto>> boardAllSearchApi() {
 
         List<BoardResponseDto> boardResponseDtos = boardService.boardAllSearch();
@@ -62,6 +92,13 @@ public class BoardController {
     }
 
     @PatchMapping("/title")
+    @Operation(summary = "제목 수정", description = "제목을 수정한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     ResponseEntity<BoardResponseDto> boardTitleUpdateApi(@RequestBody @Valid final BoardTitleUpdateDto boardTitleUpdateDto) {
 
         log.info("board title update dto = {}", boardTitleUpdateDto);
@@ -73,6 +110,13 @@ public class BoardController {
     }
 
     @PatchMapping("/content")
+    @Operation(summary = "내용 수정", description = "내용을 수정 한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     ResponseEntity<BoardResponseDto> boardContentUpdateApi(@RequestBody @Valid final BoardContentUpdateDto boardContentUpdateDto) {
 
         log.info("board content update dto = {}", boardContentUpdateDto);
@@ -84,6 +128,13 @@ public class BoardController {
     }
 
     @DeleteMapping("/{boardId}")
+    @Operation(summary = "게시물 삭제", description = "게시물을 삭제 한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "NO CONTENT"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     ResponseEntity<String> boardDeleteApi(@PathVariable @NotNull final Long boardId) {
 
         log.info("board id = {}", boardId);
