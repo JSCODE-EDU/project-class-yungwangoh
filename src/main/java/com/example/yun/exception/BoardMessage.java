@@ -1,4 +1,4 @@
-package com.example.yun.service;
+package com.example.yun.exception;
 
 public interface BoardMessage {
 

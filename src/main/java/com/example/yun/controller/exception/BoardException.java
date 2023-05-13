@@ -26,7 +26,7 @@ public class BoardException {
     }
 
     private static ResponseEntity<ErrorResult> getErrorResultResponseEntity(HttpStatus status, Exception exception) {
-        ErrorResult errorResult = new ErrorResult(status, exception.getMessage());
+        ErrorResult errorResult = ErrorResult.of(status, exception.getMessage());
         return new ResponseEntity<>(errorResult, status);
     }
 }

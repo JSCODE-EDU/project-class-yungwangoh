@@ -30,9 +30,4 @@ public class BoardResponseDto {
     public static BoardResponseDto from(Board board) {
         return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent());
     }
-
-    public static List<BoardResponseDto> responseDtosCreate(List<Board> boards) {
-        return boards.stream().map(BoardResponseDto::from)
-                .collect(toList());
-    }
 }
