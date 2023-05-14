@@ -4,8 +4,11 @@ import com.example.yun.dto.BoardRequestDto;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
+import com.example.yun.error.ErrorResult;
 import com.example.yun.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +36,9 @@ public class BoardController {
     @PostMapping("")
     @Operation(summary = "게시물 등록", description = "게시물을 등록 한다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "CREATED"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "201", description = "CREATED", content = @Content(schema = @Schema(implementation = BoardResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST", content = @Content(schema = @Schema(implementation = ErrorResult.class))),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND", content = @Content(schema = @Schema(implementation = ErrorResult.class))),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     ResponseEntity<BoardResponseDto> boardCreateApi(@RequestBody @Valid final BoardRequestDto boardRequestDto) {

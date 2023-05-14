@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResult {
 
     @ApiModelProperty(value = "Http 상태 코드", required = true)
@@ -17,6 +16,11 @@ public class ErrorResult {
 
     @ApiModelProperty(value = "예외 메세지", required = true)
     private String message;
+
+    private ErrorResult(HttpStatus httpStatus, String message) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+    }
 
     public static ErrorResult of(HttpStatus httpStatus, String message) {
         return new ErrorResult(httpStatus, message);
