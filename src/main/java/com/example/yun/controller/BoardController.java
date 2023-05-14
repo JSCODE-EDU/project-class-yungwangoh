@@ -11,11 +11,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -24,6 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/boards")
+@Validated
 public class BoardController {
 
     private final BoardService boardService;
@@ -71,7 +73,7 @@ public class BoardController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    ResponseEntity<List<BoardResponseDto>> boardAllSearchByKeywordApi(@RequestParam("keyword") final String keyword) {
+    ResponseEntity<List<BoardResponseDto>> boardAllSearchByKeywordApi(@RequestParam("keyword") @NotBlank String keyword) {
 
         List<BoardResponseDto> boardResponseDtos = boardService.boardAllSearchByKeyword(keyword);
 

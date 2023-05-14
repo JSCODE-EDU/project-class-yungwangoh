@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 @Slf4j
 @RestControllerAdvice("com.example.yun.controller")
 public class BoardException {
@@ -23,6 +25,16 @@ public class BoardException {
         log.info("[exception]", exception);
 
         return getErrorResultResponseEntity(HttpStatus.NOT_FOUND, exception);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @Operation(summary = "예외", description = "Request Param 유효성")
+    @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
+    public ResponseEntity<ErrorResult> badRequestException(ConstraintViolationException exception) {
+        log.info("[exception]", exception);
+
+        return getErrorResultResponseEntity(HttpStatus.BAD_REQUEST, exception);
     }
 
     private static ResponseEntity<ErrorResult> getErrorResultResponseEntity(HttpStatus status, Exception exception) {

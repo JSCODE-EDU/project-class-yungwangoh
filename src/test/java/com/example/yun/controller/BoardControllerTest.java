@@ -283,6 +283,20 @@ class BoardControllerTest {
                 // then
                 resultActions.andExpect(status().isBadRequest());
             }
+
+            @Test
+            @DisplayName("키워드는 공백을 제외한 1글자 이상이여야 한다.")
+            void validationKeyword() throws Exception {
+                // given
+                String keyword = "";
+
+                // when
+                ResultActions resultActions = mockMvc.perform(get("/api/boards/keyword")
+                        .param("keyword", keyword));
+
+                // then
+                resultActions.andExpect(status().isBadRequest());
+            }
         }
 
         @AfterEach
