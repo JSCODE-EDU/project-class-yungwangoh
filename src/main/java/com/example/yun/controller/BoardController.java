@@ -91,7 +91,7 @@ public class BoardController {
     })
     ResponseEntity<List<BoardResponseDto>> boardAllSearchApi() {
 
-        List<BoardResponseDto> boardResponseDtos = boardService.boardAllSearch();
+        List<BoardResponseDto> boardResponseDtos = boardService.boardAllSearchBySort();
 
         return new ResponseEntity<>(boardResponseDtos, OK);
     }

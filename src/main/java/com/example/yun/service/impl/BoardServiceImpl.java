@@ -150,7 +150,12 @@ public class BoardServiceImpl implements BoardService {
      */
     @Override
     public List<BoardResponseDto> boardAllSearchByKeyword(String keyword) {
+
+        log.info(keyword);
+
         List<Board> boards = boardQueryRepository.boardSearchByKeyword(keyword);
+
+        log.info("board = {}", boards);
 
         return responseDtosCreate(boards);
     }

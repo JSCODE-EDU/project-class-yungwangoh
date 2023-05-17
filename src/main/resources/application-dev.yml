@@ -1,0 +1,21 @@
+# dev environment (배포)
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3333/myDB?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+logging:
+  level: #띄어쓰기 없음
+    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
