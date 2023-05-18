@@ -4,13 +4,12 @@ import com.example.yun.domain.board.Board;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.repository.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
-import com.example.yun.service.BoardMessage;
+import com.example.yun.exception.BoardMessage;
 import com.example.yun.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +41,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("save = {}", save);
 
-        return BoardResponseDto.of(save);
+        return BoardResponseDto.from(save);
     }
 
     /**
@@ -55,7 +54,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("boards = {}", boards);
 
-        return getBoardResponseDtos(boards);
+        return responseDtosCreate(boards);
     }
 
     /**
@@ -69,7 +68,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("board = {}", board.get());
 
-        return BoardResponseDto.of(getBoard(board));
+        return BoardResponseDto.from(getBoard(board));
     }
 
     /**
@@ -91,7 +90,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("update title board = {}", updateBoard.get());
 
-        return BoardResponseDto.of(getBoard(updateBoard));
+        return BoardResponseDto.from(getBoard(updateBoard));
     }
 
     /**
@@ -113,7 +112,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("update content board = {}", updateContent.get());
 
-        return BoardResponseDto.of(getBoard(updateContent));
+        return BoardResponseDto.from(getBoard(updateContent));
     }
 
     /**
@@ -141,7 +140,7 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponseDto> boardAllSearchBySort() {
         List<Board> boards = boardQueryRepository.boardAllSearchBySort();
 
-        return getBoardResponseDtos(boards);
+        return responseDtosCreate(boards);
     }
 
     /**
@@ -151,9 +150,14 @@ public class BoardServiceImpl implements BoardService {
      */
     @Override
     public List<BoardResponseDto> boardAllSearchByKeyword(String keyword) {
+
+        log.info(keyword);
+
         List<Board> boards = boardQueryRepository.boardSearchByKeyword(keyword);
 
-        return getBoardResponseDtos(boards);
+        log.info("board = {}", boards);
+
+        return responseDtosCreate(boards);
     }
 
     /**
@@ -175,13 +179,8 @@ public class BoardServiceImpl implements BoardService {
         return board.get();
     }
 
-    /**
-     * board list -> boardResponseDto list mapping
-     * @param boards 게시물 리스트
-     * @return 게시물 응답 리스트
-     */
-    private static List<BoardResponseDto> getBoardResponseDtos(List<Board> boards) {
-        return boards.stream().map(BoardResponseDto::of)
+    public static List<BoardResponseDto> responseDtosCreate(List<Board> boards) {
+        return boards.stream().map(BoardResponseDto::from)
                 .collect(toList());
     }
 }

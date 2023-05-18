@@ -7,7 +7,7 @@ import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
 import com.example.yun.repository.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
-import com.example.yun.service.BoardMessage;
+import com.example.yun.exception.BoardMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BoardServiceImplTest {
@@ -207,9 +206,7 @@ class BoardServiceImplTest {
 
                 given(boardRepository.findById(id)).willThrow(IllegalArgumentException.class);
 
-                // when
-
-                // then > 존재하지 않은 id를 조회할 경우 에러
+                // when + then > 존재하지 않은 id를 조회할 경우 에러
                 assertThrows(IllegalArgumentException.class, () -> {
                     boardService.boardSearch(id);
                 });
