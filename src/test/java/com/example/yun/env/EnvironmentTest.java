@@ -18,7 +18,7 @@ public class EnvironmentTest {
     @Test
     @DisplayName("yml 환경 변수 테스트")
     void environmentTest() {
-        Assertions.assertEquals("local", environment.getActiveProfiles()[0]);
+        Assertions.assertEquals("dev", environment.getActiveProfiles()[0]);
         System.out.println(Arrays.toString(environment.getActiveProfiles()));
     }
 }
