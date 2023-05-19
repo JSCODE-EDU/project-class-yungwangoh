@@ -1,22 +1,19 @@
 package com.example.yun.jwt;
 
 import com.example.yun.domain.member.Member;
+import com.example.yun.repository.querydsl.MemberQueryRepository;
 import com.example.yun.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 
@@ -25,7 +22,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    private final MemberService memberService;
+    private final MemberQueryRepository memberQueryRepository;
     private final ObjectMapper objectMapper;
 
     @Value("${jwt.key}")
@@ -42,6 +39,10 @@ public class JwtProvider {
         key = Base64.getEncoder().encodeToString(key.getBytes());
     }
 
+    public String createToken(String email) throws JsonProcessingException {
+        return createTokenLogic(email, accessExpireTime);
+    }
+
     /**
      * 토큰 생성
      * @param email 유저 이메일
@@ -49,9 +50,9 @@ public class JwtProvider {
      * @return token
      * @throws JsonProcessingException
      */
-    public String createToken(String email, Long expireTime) throws JsonProcessingException {
+    private String createTokenLogic(String email, Long expireTime) throws JsonProcessingException {
 
-        Member member = memberService.findMember(email);
+        Member member = memberQueryRepository.findMemberByEmail(email);
 
         String stringObject = objectMapper.writeValueAsString(JwtObject.create(member.getId(), member.getEmail()));
 
