@@ -1,6 +1,8 @@
 package com.example.yun.service.impl;
 
 import com.example.yun.domain.board.Board;
+import com.example.yun.domain.board.Content;
+import com.example.yun.domain.board.Title;
 import com.example.yun.dto.BoardRequestDto;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
@@ -20,6 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.yun.domain.board.Content.*;
+import static com.example.yun.domain.board.Title.*;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,9 +48,7 @@ class BoardServiceImplTest {
 
         @BeforeEach
         void init() {
-            Long id = 1L;
-            board = new Board("안녕하세요", "안녕");
-            board.setId(id);
+            board = new Board(titleCreate("안녕하세요"), contentCreate("안녕"));
         }
 
         @Test
@@ -190,9 +192,7 @@ class BoardServiceImplTest {
 
         @BeforeEach
         void init() {
-            Long id = 1L;
-            board = new Board("안녕하세요", "안녕");
-            board.setId(id);
+            board = new Board(titleCreate("안녕하세요"), contentCreate("안녕"));
         }
 
         @Nested

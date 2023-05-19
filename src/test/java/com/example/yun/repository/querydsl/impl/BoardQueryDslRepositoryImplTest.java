@@ -1,6 +1,8 @@
 package com.example.yun.repository.querydsl.impl;
 
 import com.example.yun.domain.board.Board;
+import com.example.yun.domain.board.Content;
+import com.example.yun.domain.board.Title;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +61,7 @@ class BoardQueryDslRepositoryImplTest {
 
             // when
             List<Board> boards = jpaQueryFactory.selectFrom(board)
-                    .where(board.title.contains(keyword))
+                    .where(board.title.title.contains(keyword))
                     .orderBy(board.createTime.desc())
                     .limit(100L)
                     .fetch();
@@ -70,7 +72,7 @@ class BoardQueryDslRepositoryImplTest {
 
         void boardListInit() {
             for(int i = 0; i < 101; i++) {
-                Board board = new Board("안녕", "안녕하세요");
+                Board board = new Board(Title.titleCreate("안녕"), Content.contentCreate("안녕하세요"));
                 em.persist(board);
             }
         }

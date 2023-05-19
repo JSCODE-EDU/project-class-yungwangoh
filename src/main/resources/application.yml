@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: local
 #spring:
 #  datasource:
 #    url: jdbc:mysql://localhost:3333/myDB?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true

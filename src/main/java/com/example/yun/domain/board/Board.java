@@ -5,8 +5,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.Stack;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,27 +16,24 @@ public class Board extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;
+    private Title title;
+    private Content content;
 
-    @Column(name = "title")
-    private String title;
-
-    @Lob
-    @Column(name = "content")
-    private String content;
-
-    public Board(String title, String content) {
+    public Board(final Title title, final Content content) {
         this.title = title;
         this.content = content;
     }
 
-    // 테스트 목적 setId
-    public void setId(Long id) {
-        this.id = id;
+    public String getTitle() {
+        return title.getTitle();
     }
-    public void updateTitle(String title) {
+    public String getContent() {
+        return content.getContent();
+    }
+    public void updateTitle(Title title) {
         this.title = title;
     }
-    public void updateContent(String content) {
+    public void updateContent(Content content) {
         this.content = content;
     }
 }

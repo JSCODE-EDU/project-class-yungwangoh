@@ -2,9 +2,9 @@ package com.example.yun.service.impl;
 
 import com.example.yun.domain.board.Board;
 import com.example.yun.dto.BoardResponseDto;
+import com.example.yun.exception.BoardMessage;
 import com.example.yun.repository.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
-import com.example.yun.exception.BoardMessage;
 import com.example.yun.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.yun.domain.board.Content.contentCreate;
+import static com.example.yun.domain.board.Title.titleCreate;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
@@ -35,7 +37,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public BoardResponseDto boardCreate(String title, String content) {
-        Board board = new Board(title, content);
+        Board board = new Board(titleCreate(title), contentCreate(content));
 
         Board save = boardRepository.save(board);
 
@@ -84,7 +86,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("board = {}", board.get());
 
-        getBoard(board).updateTitle(title);
+        getBoard(board).updateTitle(titleCreate(title));
 
         Optional<Board> updateBoard = getBoard(id);
 
@@ -106,7 +108,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("board = {}", board.get());
 
-        getBoard(board).updateContent(content);
+        getBoard(board).updateContent(contentCreate(content));
 
         Optional<Board> updateContent = getBoard(id);
 
