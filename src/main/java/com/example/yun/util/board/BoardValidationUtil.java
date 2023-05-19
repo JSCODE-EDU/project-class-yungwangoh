@@ -1,8 +1,8 @@
-package com.example.yun.util;
+package com.example.yun.util.board;
 
 import com.example.yun.exception.StringValidationException;
 
-public class DomainStringValidationUtil {
+public class BoardValidationUtil {
 
     public static String stringSettingTrim(String str) {
         return str.trim();

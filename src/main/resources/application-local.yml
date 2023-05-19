@@ -22,3 +22,10 @@ logging:
 
 origin:
   address: http://localhost:8000
+
+jwt:
+  key: applicationKey
+  blackList: blackList
+  expireTime:
+    access: 3600000
+    refresh: 1296000000

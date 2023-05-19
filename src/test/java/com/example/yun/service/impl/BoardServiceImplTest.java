@@ -1,15 +1,13 @@
 package com.example.yun.service.impl;
 
 import com.example.yun.domain.board.Board;
-import com.example.yun.domain.board.Content;
-import com.example.yun.domain.board.Title;
 import com.example.yun.dto.BoardRequestDto;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
+import com.example.yun.exception.BoardMessage;
 import com.example.yun.repository.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
-import com.example.yun.exception.BoardMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.yun.domain.board.Content.*;
-import static com.example.yun.domain.board.Title.*;
+import static com.example.yun.domain.board.Content.contentCreate;
+import static com.example.yun.domain.board.Title.titleCreate;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 
-import static com.example.yun.util.DomainStringValidationUtil.contentStringNullException;
-import static com.example.yun.util.DomainStringValidationUtil.stringSettingTrim;
+import static com.example.yun.util.board.BoardValidationUtil.contentStringNullException;
+import static com.example.yun.util.board.BoardValidationUtil.stringSettingTrim;
 
 @Embeddable
 @Getter

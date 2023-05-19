@@ -1,11 +1,12 @@
 package com.example.yun.domain.board;
 
-import com.example.yun.util.DomainStringValidationUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+
+import static com.example.yun.util.board.BoardValidationUtil.*;
 
 @Embeddable
 @Getter
@@ -21,8 +22,8 @@ public class Title {
     public static Title titleCreate(String title) {
         String str = "";
 
-        if(DomainStringValidationUtil.titleStringNullException(title)) {
-            str = DomainStringValidationUtil.stringSettingTrim(title);
+        if(titleStringNullException(title)) {
+            str = stringSettingTrim(title);
         }
 
         return new Title(str);
