@@ -19,9 +19,13 @@ public class Board extends BaseEntity {
     private Title title;
     private Content content;
 
-    public Board(final Title title, final Content content) {
-        this.title = title;
-        this.content = content;
+    public Board(final String title, final String content) {
+        this.title = Title.titleCreate(title);
+        this.content = Content.contentCreate(content);
+    }
+
+    public static Board create(final String title, final String content) {
+        return new Board(title, content);
     }
 
     public String getTitle() {

@@ -60,6 +60,21 @@ class MemberTest {
                 assertThatThrownBy(() -> Member.create(email, pwd))
                         .isInstanceOf(StringValidationException.class);
             }
+
+            @Test
+            @DisplayName("@가 2개 이상일 경우")
+            void emailMissMatchCheck() {
+                // given
+                String email = "qwer1234@@naver.com";
+                String pwd = "qwer1234@A";
+
+                // when
+
+                // then
+                assertThatThrownBy(() -> Member.create(email, pwd))
+                        .isInstanceOf(StringValidationException.class);
+
+            }
         }
     }
 

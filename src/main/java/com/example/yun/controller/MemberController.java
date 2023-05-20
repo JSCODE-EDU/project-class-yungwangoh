@@ -5,10 +5,10 @@ import com.example.yun.dto.member.MemberRequestDto;
 import com.example.yun.dto.member.MemberResponseDto;
 import com.example.yun.dto.member.login.LoginRequestDto;
 import com.example.yun.dto.member.login.LoginResponseDto;
+import com.example.yun.jwt.JwtObject;
+import com.example.yun.jwt.JwtProvider;
 import com.example.yun.service.MemberService;
-import com.example.yun.util.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class MemberController {
 
     private final MemberService memberService;
-    private final ObjectMapper objectMapper;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/create")
     public ResponseEntity<MemberResponseDto> memberCreateApi(@RequestBody @Valid MemberRequestDto memberRequestDto) {
@@ -44,7 +44,7 @@ public class MemberController {
 
         log.info("[token] = {}", jwt);
 
-        Member jwtMember = tokenExtractMember(jwt);
+        JwtObject jwtMember = jwtProvider.tokenPayloadExtract(jwt);
 
         Member member = memberService.findMember(jwtMember.getId());
 
@@ -57,14 +57,5 @@ public class MemberController {
         String token = memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 
         return new ResponseEntity<>(LoginResponseDto.create(token), OK);
-    }
-
-    private Member tokenExtractMember(String token) throws JsonProcessingException {
-
-        String extract = JwtUtil.tokenPayloadExtract(token);
-
-        log.info("[extract] = {}", extract);
-
-        return objectMapper.readValue(extract, Member.class);
     }
 }

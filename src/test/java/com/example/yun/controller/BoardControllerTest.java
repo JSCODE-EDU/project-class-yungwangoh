@@ -5,7 +5,10 @@ import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
 import com.example.yun.repository.BoardRepository;
+import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.service.BoardService;
+import com.example.yun.service.MemberService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +34,28 @@ class BoardControllerTest {
     @Autowired
     private BoardRepository boardRepository;
     @Autowired
+    private MemberService memberService;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
     private ObjectMapper objectMapper;
 
+    private String token = "bearer ";
+    private final String headerName = "Authorization";
+
+    @BeforeEach
+    void memberLoginInit() throws JsonProcessingException {
+        String email = "qwer1234@naver.com";
+        String pwd = "qwer1234@A";
+
+        memberService.memberCreate(email, pwd);
+        token += memberService.login(email, pwd);
+    }
+
+    @AfterEach
+    void memberDbInit() {
+        memberRepository.deleteAll();
+    }
 
     @Nested
     @DisplayName("성공")
@@ -50,6 +73,7 @@ class BoardControllerTest {
 
             // when
             ResultActions resultActions = mockMvc.perform(post("/api/boards")
+                    .header(headerName, token)
                     .content(s)
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON));
@@ -81,7 +105,8 @@ class BoardControllerTest {
                 int size = 1;
 
                 // when
-                ResultActions resultActions = mockMvc.perform(get("/api/boards"));
+                ResultActions resultActions = mockMvc.perform(get("/api/boards")
+                        .header(headerName, token));
 
                 // then
                 resultActions.andExpect(status().isOk())
@@ -97,7 +122,8 @@ class BoardControllerTest {
                 Long id = boardResponseDto.getId();
 
                 // when
-                ResultActions resultActions = mockMvc.perform(get("/api/boards/{boardId}", id));
+                ResultActions resultActions = mockMvc.perform(get("/api/boards/{boardId}", id)
+                        .header(headerName, token));
 
                 // then
                 resultActions.andExpect(status().isOk())
@@ -113,6 +139,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(get("/api/boards/keyword")
+                        .header(headerName, token)
                         .param("keyword", keyword));
 
                 // then
@@ -152,6 +179,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(patch("/api/boards/title")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -173,6 +201,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(patch("/api/boards/content")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -210,7 +239,8 @@ class BoardControllerTest {
                 Long id = boardResponseDto.getId();
 
                 // when
-                ResultActions resultActions = mockMvc.perform(delete("/api/boards/{boardId}", id));
+                ResultActions resultActions = mockMvc.perform(delete("/api/boards/{boardId}", id)
+                        .header(headerName, token));
 
                 // then
                 resultActions.andExpect(status().isNoContent())
@@ -240,6 +270,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(post("/api/boards")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -257,6 +288,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(patch("/api/boards/title")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -276,6 +308,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(post("/api/boards")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -292,6 +325,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(get("/api/boards/keyword")
+                        .header(headerName, token)
                         .param("keyword", keyword));
 
                 // then

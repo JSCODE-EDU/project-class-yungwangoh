@@ -46,7 +46,7 @@ class BoardServiceImplTest {
 
         @BeforeEach
         void init() {
-            board = new Board(titleCreate("안녕하세요"), contentCreate("안녕"));
+            board = Board.create("안녕하세요", "안녕");
         }
 
         @Test
@@ -190,7 +190,7 @@ class BoardServiceImplTest {
 
         @BeforeEach
         void init() {
-            board = new Board(titleCreate("안녕하세요"), contentCreate("안녕"));
+            board = Board.create("안녕하세요", "안녕");
         }
 
         @Nested
