@@ -5,8 +5,6 @@ import com.example.yun.dto.member.MemberRequestDto;
 import com.example.yun.dto.member.MemberResponseDto;
 import com.example.yun.dto.member.login.LoginRequestDto;
 import com.example.yun.dto.member.login.LoginResponseDto;
-import com.example.yun.jwt.JwtObject;
-import com.example.yun.jwt.JwtProvider;
 import com.example.yun.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +27,6 @@ import static org.springframework.http.HttpStatus.OK;
 public class MemberController {
 
     private final MemberService memberService;
-    private final JwtProvider jwtProvider;
 
     @PostMapping("/create")
     public ResponseEntity<MemberResponseDto> memberCreateApi(@RequestBody @Valid MemberRequestDto memberRequestDto) {
@@ -42,11 +39,7 @@ public class MemberController {
     @GetMapping("")
     public ResponseEntity<MemberResponseDto> findMemberApi(@RequestHeader("Authorization") String jwt) throws JsonProcessingException {
 
-        log.info("[token] = {}", jwt);
-
-        JwtObject jwtMember = jwtProvider.tokenPayloadExtract(jwt);
-
-        Member member = memberService.findMember(jwtMember.getId());
+        Member member = memberService.findMember(jwt);
 
         return new ResponseEntity<>(create(member), OK);
     }

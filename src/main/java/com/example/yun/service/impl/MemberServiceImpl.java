@@ -1,17 +1,17 @@
 package com.example.yun.service.impl;
 
 import com.example.yun.domain.member.Member;
+import com.example.yun.jwt.JwtObject;
 import com.example.yun.jwt.JwtProvider;
 import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.repository.querydsl.MemberQueryRepository;
 import com.example.yun.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 import static com.example.yun.util.member.LoginCheckUtil.emailCheck;
 import static com.example.yun.util.member.LoginCheckUtil.passwordCheck;
@@ -25,6 +25,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final JwtProvider jwtProvider;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -39,14 +40,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String login(String email, String pwd) throws JsonProcessingException {
+    public String login(String email, String pwd) {
         Member member = Member.create(email, pwd);
 
-        Member findMember = memberQueryRepository.findMemberByEmail(email);
+        Member findMember = memberQueryRepository.findMemberByEmail(member.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 
         // 검증
         if(emailCheck(member, findMember) && passwordCheck(member, findMember)) {
-            String token = jwtProvider.createToken(member.getEmail());
+            String token = jwtProvider.createToken(findMember);
             log.info("[token] = {}", token);
 
             return token;
@@ -61,7 +63,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findMember(Long id) {
+    public Member findMember(String jwt) throws JsonProcessingException {
+        String s = jwtProvider.tokenPayloadExtract(jwt);
+
+        Long id = objectMapper.readValue(s, JwtObject.class).getId();
+
         return getMember(id);
     }
 

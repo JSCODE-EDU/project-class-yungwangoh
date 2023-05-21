@@ -7,7 +7,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 import static com.example.yun.domain.member.QMember.*;
+import static java.util.Optional.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,9 +26,9 @@ public class MemberQueryDslRepositoryImpl implements MemberQueryRepository {
     }
 
     @Override
-    public Member findMemberByEmail(String email) {
-        return jpaQueryFactory.selectFrom(member)
+    public Optional<Member> findMemberByEmail(String email) {
+        return ofNullable(jpaQueryFactory.selectFrom(member)
                 .where(member.email.email.eq(email))
-                .fetchOne();
+                .fetchOne());
     }
 }

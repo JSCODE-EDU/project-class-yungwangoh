@@ -9,7 +9,7 @@ public interface MemberService {
         return null;
     }
 
-    default String login(String email, String pwd) throws JsonProcessingException {
+    default String login(String email, String pwd) {
         return null;
     }
 
@@ -17,7 +17,7 @@ public interface MemberService {
         return null;
     }
 
-    default Member findMember(Long id) {
+    default Member findMember(String jwt) throws JsonProcessingException {
         return null;
     }
 

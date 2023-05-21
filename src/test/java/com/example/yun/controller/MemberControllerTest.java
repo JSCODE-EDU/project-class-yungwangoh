@@ -2,8 +2,10 @@ package com.example.yun.controller;
 
 import com.example.yun.dto.member.MemberRequestDto;
 import com.example.yun.dto.member.login.LoginRequestDto;
+import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,13 @@ class MemberControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @AfterEach
+    void dbInit() {
+        memberRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("회원 가입")

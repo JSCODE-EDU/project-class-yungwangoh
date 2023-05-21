@@ -8,7 +8,6 @@ import com.example.yun.repository.BoardRepository;
 import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.service.BoardService;
 import com.example.yun.service.MemberService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ class BoardControllerTest {
     private final String headerName = "Authorization";
 
     @BeforeEach
-    void memberLoginInit() throws JsonProcessingException {
+    void memberLoginInit() {
         String email = "qwer1234@naver.com";
         String pwd = "qwer1234@A";
 
