@@ -53,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
 
             return token;
         } else {
-            return null;
+            throw new IllegalArgumentException("로그인을 할 수 없습니다.");
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.yun.service.impl;
 
 import com.example.yun.domain.board.Board;
+import com.example.yun.domain.member.Member;
 import com.example.yun.dto.BoardRequestDto;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
@@ -8,6 +9,7 @@ import com.example.yun.dto.update.BoardTitleUpdateDto;
 import com.example.yun.exception.BoardMessage;
 import com.example.yun.repository.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
+import com.example.yun.repository.querydsl.MemberQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,8 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.yun.domain.board.Content.contentCreate;
-import static com.example.yun.domain.board.Title.titleCreate;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,16 +37,20 @@ class BoardServiceImplTest {
     private BoardRepository boardRepository;
     @Mock
     private BoardQueryRepository boardQueryRepository;
+    @Mock
+    private MemberQueryRepository memberQueryRepository;
 
     @Nested
     @DisplayName("게시물 성공")
     class Success {
 
         private Board board;
+        private Member member;
 
         @BeforeEach
         void init() {
-            board = Board.create("안녕하세요", "안녕");
+            member = Member.create("qwer1234@naver.com", "qwer1234@A");
+            board = Board.create("안녕하세요", "안녕", member);
         }
 
         @Test
@@ -55,12 +59,17 @@ class BoardServiceImplTest {
             // given
             String title = "안녕하세요";
             String content = "안녕";
-            BoardRequestDto boardRequestDto = new BoardRequestDto(title, content);
+            String email = "qwer1234@naver.com";
+            BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content, email);
 
+            given(memberQueryRepository.findMemberByEmail(email)).willReturn(of(member));
             given(boardRepository.save(any())).willReturn(board);
 
             // when
-            BoardResponseDto boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(), boardRequestDto.getContent());
+            BoardResponseDto boardResponseDto = boardService.boardCreate(
+                    boardRequestDto.getTitle(),
+                    boardRequestDto.getContent(),
+                    boardRequestDto.getEmail());
 
             // then
             assertThat(boardRequestDto.getTitle()).isEqualTo(boardResponseDto.getTitle());
@@ -185,13 +194,6 @@ class BoardServiceImplTest {
     @Nested
     @DisplayName("게시물 실패")
     class Failed {
-
-        private Board board;
-
-        @BeforeEach
-        void init() {
-            board = Board.create("안녕하세요", "안녕");
-        }
 
         @Nested
         @DisplayName("공통 에러 -> 존재하지 않는 id")

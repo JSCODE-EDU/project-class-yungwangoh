@@ -46,7 +46,7 @@ public class BoardController {
         log.info("board request dto = {} ", boardRequestDto);
 
         BoardResponseDto boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                boardRequestDto.getContent());
+                boardRequestDto.getContent(), boardRequestDto.getEmail());
 
         return new ResponseEntity<>(boardResponseDto, CREATED);
     }

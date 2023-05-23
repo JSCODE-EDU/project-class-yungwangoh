@@ -25,7 +25,7 @@ class BoardTest {
             // when
 
             // then
-            assertThatThrownBy(() -> Board.create(title, content))
+            assertThatThrownBy(() -> Board.create(title, content, null))
                     .isInstanceOf(StringValidationException.class);
         }
     }
@@ -45,7 +45,7 @@ class BoardTest {
             // when
 
             // then
-            assertThatThrownBy(() -> Board.create(title, content))
+            assertThatThrownBy(() -> Board.create(title, content,null))
                     .isInstanceOf(StringValidationException.class);
         }
 

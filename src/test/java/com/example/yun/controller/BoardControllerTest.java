@@ -42,9 +42,11 @@ class BoardControllerTest {
     private String token = "bearer ";
     private final String headerName = "Authorization";
 
+    private String email;
+
     @BeforeEach
     void memberLoginInit() {
-        String email = "qwer1234@naver.com";
+        email = "qwer1234@naver.com";
         String pwd = "qwer1234@A";
 
         memberService.memberCreate(email, pwd);
@@ -66,7 +68,7 @@ class BoardControllerTest {
             // given
             String title = "안녕";
             String content = "안녕하세요";
-            BoardRequestDto boardRequestDto = new BoardRequestDto(title, content);
+            BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content, email);
 
             String s = objectMapper.writeValueAsString(boardRequestDto);
 
@@ -91,10 +93,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = new BoardRequestDto("안녕", "안녕하세요");
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent());
+                        boardRequestDto.getContent(), boardRequestDto.getEmail());
             }
 
             @Test
@@ -161,10 +163,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = new BoardRequestDto("안녕", "안녕하세요");
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent());
+                        boardRequestDto.getContent(), boardRequestDto.getEmail());
             }
 
             @Test
@@ -225,10 +227,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = new BoardRequestDto("안녕", "안녕하세요");
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent());
+                        boardRequestDto.getContent(), boardRequestDto.getEmail());
             }
 
             @Test
@@ -264,7 +266,7 @@ class BoardControllerTest {
             @DisplayName("공백 or 빈칸")
             void validationEmptyFailed() throws Exception {
                 // given
-                BoardRequestDto boardRequestDto = new BoardRequestDto("", " ");
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("", "", email);
                 String s = objectMapper.writeValueAsString(boardRequestDto);
 
                 // when
@@ -302,7 +304,7 @@ class BoardControllerTest {
                 // given
                 String overTitle = "aldfjghfjdkshgjghfdkghkjfdhgkfdgfd";
                 String content = "ㅎㅇ";
-                BoardRequestDto boardRequestDto = new BoardRequestDto(overTitle, content);
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(overTitle, content, email);
                 String s = objectMapper.writeValueAsString(boardRequestDto);
 
                 // when

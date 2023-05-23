@@ -72,7 +72,7 @@ class BoardQueryDslRepositoryImplTest {
 
         void boardListInit() {
             for(int i = 0; i < 101; i++) {
-                Board board = Board.create("안녕", "안녕하세요");
+                Board board = Board.create("안녕", "안녕하세요", null);
                 em.persist(board);
             }
         }

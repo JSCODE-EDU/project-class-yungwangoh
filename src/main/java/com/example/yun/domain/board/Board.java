@@ -1,13 +1,12 @@
 package com.example.yun.domain.board;
 
 import com.example.yun.domain.BaseEntity;
+import com.example.yun.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,13 +18,18 @@ public class Board extends BaseEntity {
     private Title title;
     private Content content;
 
-    public Board(final String title, final String content) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    private Board(final String title, final String content, final Member member) {
         this.title = Title.titleCreate(title);
         this.content = Content.contentCreate(content);
+        this.member = member;
     }
 
-    public static Board create(final String title, final String content) {
-        return new Board(title, content);
+    public static Board create(final String title, final String content, final Member member) {
+        return new Board(title, content, member);
     }
 
     public String getTitle() {
