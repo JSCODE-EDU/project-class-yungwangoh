@@ -4,21 +4,21 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentRequestDto {
 
     private String content;
-    private String email;
     private Long boardId;
 
-    private CommentRequestDto(String content, String email, Long boardId) {
+    private CommentRequestDto(String content, Long boardId) {
         this.content = content;
-        this.email = email;
         this.boardId = boardId;
     }
 
-    public static CommentRequestDto commentRequestCreate(String content, String email, Long boardId) {
-        return new CommentRequestDto(content, email, boardId);
+    public static CommentRequestDto commentRequestCreate(String content, Long boardId) {
+        return new CommentRequestDto(content, boardId);
     }
 }

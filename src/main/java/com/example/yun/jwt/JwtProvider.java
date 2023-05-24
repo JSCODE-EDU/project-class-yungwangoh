@@ -2,10 +2,13 @@ package com.example.yun.jwt;
 
 import com.example.yun.domain.member.Member;
 import com.example.yun.util.jwt.JwtUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -82,5 +85,12 @@ public class JwtProvider {
         }
 
         return true;
+    }
+
+    public Long mapTokenToId(String token) {
+
+        String s = tokenPayloadExtract(token);
+
+        return Long.parseLong(s);
     }
 }
