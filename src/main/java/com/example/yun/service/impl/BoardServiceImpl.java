@@ -1,10 +1,12 @@
 package com.example.yun.service.impl;
 
 import com.example.yun.domain.board.Board;
+import com.example.yun.domain.member.Member;
 import com.example.yun.dto.BoardResponseDto;
+import com.example.yun.exception.BoardMessage;
 import com.example.yun.repository.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
-import com.example.yun.exception.BoardMessage;
+import com.example.yun.repository.querydsl.MemberQueryRepository;
 import com.example.yun.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.yun.domain.board.Content.contentCreate;
+import static com.example.yun.domain.board.Title.titleCreate;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
@@ -25,17 +29,24 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardQueryRepository boardQueryRepository;
+    private final MemberQueryRepository memberQueryRepository;
 
     /**
      * 게시물 등록
-     * @param title 제목
+     *
+     * @param title   제목
      * @param content 내용
+     * @param email 유저 이메일
      * @return 게시물 응답 Dto(id, title, content)
      */
     @Override
     @Transactional
-    public BoardResponseDto boardCreate(String title, String content) {
-        Board board = new Board(title, content);
+    public BoardResponseDto boardCreate(String title, String content, String email) {
+
+        Member member = memberQueryRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+
+        Board board = Board.create(title, content, member);
 
         Board save = boardRepository.save(board);
 
@@ -84,7 +95,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("board = {}", board.get());
 
-        getBoard(board).updateTitle(title);
+        getBoard(board).updateTitle(titleCreate(title));
 
         Optional<Board> updateBoard = getBoard(id);
 
@@ -106,7 +117,7 @@ public class BoardServiceImpl implements BoardService {
 
         log.info("board = {}", board.get());
 
-        getBoard(board).updateContent(content);
+        getBoard(board).updateContent(contentCreate(content));
 
         Optional<Board> updateContent = getBoard(id);
 

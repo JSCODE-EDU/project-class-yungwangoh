@@ -5,7 +5,9 @@ import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
 import com.example.yun.repository.BoardRepository;
+import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.service.BoardService;
+import com.example.yun.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,30 @@ class BoardControllerTest {
     @Autowired
     private BoardRepository boardRepository;
     @Autowired
+    private MemberService memberService;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
     private ObjectMapper objectMapper;
 
+    private String token = "bearer ";
+    private final String headerName = "Authorization";
+
+    private String email;
+
+    @BeforeEach
+    void memberLoginInit() {
+        email = "qwer1234@naver.com";
+        String pwd = "qwer1234@A";
+
+        memberService.memberCreate(email, pwd);
+        token += memberService.login(email, pwd);
+    }
+
+    @AfterEach
+    void memberDbInit() {
+        memberRepository.deleteAll();
+    }
 
     @Nested
     @DisplayName("성공")
@@ -44,12 +68,13 @@ class BoardControllerTest {
             // given
             String title = "안녕";
             String content = "안녕하세요";
-            BoardRequestDto boardRequestDto = new BoardRequestDto(title, content);
+            BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content, email);
 
             String s = objectMapper.writeValueAsString(boardRequestDto);
 
             // when
             ResultActions resultActions = mockMvc.perform(post("/api/boards")
+                    .header(headerName, token)
                     .content(s)
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON));
@@ -68,10 +93,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = new BoardRequestDto("안녕", "안녕하세요");
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent());
+                        boardRequestDto.getContent(), boardRequestDto.getEmail());
             }
 
             @Test
@@ -81,7 +106,8 @@ class BoardControllerTest {
                 int size = 1;
 
                 // when
-                ResultActions resultActions = mockMvc.perform(get("/api/boards"));
+                ResultActions resultActions = mockMvc.perform(get("/api/boards")
+                        .header(headerName, token));
 
                 // then
                 resultActions.andExpect(status().isOk())
@@ -97,7 +123,8 @@ class BoardControllerTest {
                 Long id = boardResponseDto.getId();
 
                 // when
-                ResultActions resultActions = mockMvc.perform(get("/api/boards/{boardId}", id));
+                ResultActions resultActions = mockMvc.perform(get("/api/boards/{boardId}", id)
+                        .header(headerName, token));
 
                 // then
                 resultActions.andExpect(status().isOk())
@@ -113,6 +140,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(get("/api/boards/keyword")
+                        .header(headerName, token)
                         .param("keyword", keyword));
 
                 // then
@@ -135,10 +163,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = new BoardRequestDto("안녕", "안녕하세요");
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent());
+                        boardRequestDto.getContent(), boardRequestDto.getEmail());
             }
 
             @Test
@@ -152,6 +180,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(patch("/api/boards/title")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -173,6 +202,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(patch("/api/boards/content")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -197,10 +227,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = new BoardRequestDto("안녕", "안녕하세요");
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent());
+                        boardRequestDto.getContent(), boardRequestDto.getEmail());
             }
 
             @Test
@@ -210,7 +240,8 @@ class BoardControllerTest {
                 Long id = boardResponseDto.getId();
 
                 // when
-                ResultActions resultActions = mockMvc.perform(delete("/api/boards/{boardId}", id));
+                ResultActions resultActions = mockMvc.perform(delete("/api/boards/{boardId}", id)
+                        .header(headerName, token));
 
                 // then
                 resultActions.andExpect(status().isNoContent())
@@ -235,11 +266,12 @@ class BoardControllerTest {
             @DisplayName("공백 or 빈칸")
             void validationEmptyFailed() throws Exception {
                 // given
-                BoardRequestDto boardRequestDto = new BoardRequestDto("", " ");
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("", "", email);
                 String s = objectMapper.writeValueAsString(boardRequestDto);
 
                 // when
                 ResultActions resultActions = mockMvc.perform(post("/api/boards")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -257,6 +289,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(patch("/api/boards/title")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -271,11 +304,12 @@ class BoardControllerTest {
                 // given
                 String overTitle = "aldfjghfjdkshgjghfdkghkjfdhgkfdgfd";
                 String content = "ㅎㅇ";
-                BoardRequestDto boardRequestDto = new BoardRequestDto(overTitle, content);
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(overTitle, content, email);
                 String s = objectMapper.writeValueAsString(boardRequestDto);
 
                 // when
                 ResultActions resultActions = mockMvc.perform(post("/api/boards")
+                        .header(headerName, token)
                         .content(s)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -292,6 +326,7 @@ class BoardControllerTest {
 
                 // when
                 ResultActions resultActions = mockMvc.perform(get("/api/boards/keyword")
+                        .header(headerName, token)
                         .param("keyword", keyword));
 
                 // then

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BoardService {
 
-    default BoardResponseDto boardCreate(String title, String content) {
+    default BoardResponseDto boardCreate(String title, String content, String email) {
         return null;
     }
 

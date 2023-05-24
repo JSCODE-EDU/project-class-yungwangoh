@@ -21,3 +21,16 @@ logging:
 #    org.hibernate.type: trace
 server:
   port: 5000
+
+origin:
+  address: http://localhost:8000
+
+jwt:
+  key: applicationKey
+  blackList: blackList
+  expireTime:
+    access: 3600000
+    refresh: 1296000000
+
+valid:
+  password: ^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$;

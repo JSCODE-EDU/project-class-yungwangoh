@@ -1,14 +1,15 @@
 package com.example.yun.dto;
 
 import com.example.yun.domain.board.Board;
+import com.example.yun.domain.board.Content;
+import com.example.yun.domain.board.Title;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import static com.example.yun.domain.board.Content.*;
+import static com.example.yun.domain.board.Title.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

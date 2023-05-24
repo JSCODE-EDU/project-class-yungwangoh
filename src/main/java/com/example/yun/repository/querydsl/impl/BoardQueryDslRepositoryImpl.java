@@ -27,7 +27,7 @@ public class BoardQueryDslRepositoryImpl implements BoardQueryRepository {
     @Override
     public List<Board> boardSearchByKeyword(String keyword) {
         return jpaQueryFactory.selectFrom(board)
-                .where(board.title.contains(keyword))
+                .where(board.title.title.contains(keyword))
                 .orderBy(board.createTime.desc())
                 .limit(100L)
                 .fetch();

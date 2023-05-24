@@ -1,9 +1,9 @@
 package com.example.yun.controller.exception;
 
 import com.example.yun.error.ErrorResult;
+import com.example.yun.exception.StringValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +29,32 @@ public class BoardException {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @Operation(summary = "예외", description = "제목과 내용이 주어진 형식에 맞지 않는 경우")
+    @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
+    public ResponseEntity<ErrorResult> titleOrContentValidatedException(StringValidationException exception) {
+        log.info("[exception]", exception);
+
+        return getErrorResultResponseEntity(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @Operation(summary = "예외", description = "Request Param 유효성")
     @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
     public ResponseEntity<ErrorResult> badRequestException(ConstraintViolationException exception) {
         log.info("[exception]", exception);
 
         return getErrorResultResponseEntity(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @Operation(summary = "예외", description = "RuntimeException 처리")
+    @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
+    public ResponseEntity<ErrorResult> runTimeException(RuntimeException exception) {
+        log.info("[exception]", exception);
+
+        return getErrorResultResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, exception);
     }
 
     private static ResponseEntity<ErrorResult> getErrorResultResponseEntity(HttpStatus status, Exception exception) {

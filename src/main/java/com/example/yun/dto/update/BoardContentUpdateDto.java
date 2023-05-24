@@ -20,4 +20,6 @@ public class BoardContentUpdateDto {
     @Size(max = 1000)
     @ApiModelProperty(value = "내용", example = "ㅎㅇ요", required = true)
     private String content;
+
+
 }
