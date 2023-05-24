@@ -4,7 +4,7 @@ import com.example.yun.domain.board.Board;
 import com.example.yun.domain.member.Member;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.exception.BoardMessage;
-import com.example.yun.repository.BoardRepository;
+import com.example.yun.repository.board.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
 import com.example.yun.repository.querydsl.MemberQueryRepository;
 import com.example.yun.service.BoardService;

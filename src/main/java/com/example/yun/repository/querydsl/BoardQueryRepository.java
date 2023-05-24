@@ -13,4 +13,8 @@ public interface BoardQueryRepository {
     default List<Board> boardSearchByKeyword(String keyword) {
         return null;
     }
+
+    default void likeUp(Long boardId) {}
+
+    default void likeDown(Long boardId) {}
 }

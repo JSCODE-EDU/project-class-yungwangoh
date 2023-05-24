@@ -1,10 +1,12 @@
 package com.example.yun.repository.querydsl.impl;
 
 import com.example.yun.domain.board.Board;
+import com.example.yun.domain.board.QBoard;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
