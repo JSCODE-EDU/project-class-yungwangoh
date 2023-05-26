@@ -3,6 +3,7 @@ package com.example.yun.service.impl;
 import com.example.yun.domain.board.Board;
 import com.example.yun.domain.member.Member;
 import com.example.yun.dto.BoardResponseDto;
+import com.example.yun.dto.page.PageResponseDto;
 import com.example.yun.exception.BoardMessage;
 import com.example.yun.repository.board.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
@@ -10,6 +11,8 @@ import com.example.yun.repository.querydsl.MemberQueryRepository;
 import com.example.yun.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -169,6 +172,13 @@ public class BoardServiceImpl implements BoardService {
         log.info("board = {}", boards);
 
         return responseDtosCreate(boards);
+    }
+
+    @Override
+    public PageResponseDto boardPagination(Pageable pageable) {
+        Page<Board> boards = boardQueryRepository.boardPageNation(pageable);
+
+        return PageResponseDto.pageCreate(boards);
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.example.yun.service;
 
 import com.example.yun.dto.BoardResponseDto;
+import com.example.yun.dto.page.PageResponseDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -31,6 +33,10 @@ public interface BoardService {
     default List<BoardResponseDto> boardAllSearchBySort() { return null; }
 
     default List<BoardResponseDto> boardAllSearchByKeyword(String keyword) {
+        return null;
+    }
+
+    default PageResponseDto boardPagination(Pageable pageable) {
         return null;
     }
 }
