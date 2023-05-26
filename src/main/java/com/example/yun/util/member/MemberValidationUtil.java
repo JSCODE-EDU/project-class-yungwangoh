@@ -24,8 +24,6 @@ public class MemberValidationUtil {
         return true;
     }
 
-
-
     private static boolean pwdValidation(String password) {
         // 비밀번호는 8 ~ 15자 사이 특수문자 하나 이상 대문자 하나 이상.
         return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,15}$");

@@ -15,7 +15,7 @@ public class BaseInterceptor implements HandlerInterceptor {
     private final JwtProvider jwtProvider;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         log.info("[request] = {}", request);
         log.info("[response] = {}", response);
 

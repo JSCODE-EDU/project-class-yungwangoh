@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +26,14 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final JwtProvider jwtProvider;
-    private final ObjectMapper objectMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public Member memberCreate(String email, String pwd) {
-        Member member = Member.create(email, pwd);
+        Member member = Member.create(email, passwordEncoder.encode(pwd));
+
+        log.info("[Member encoded pwd] = {}", member.getPassword());
 
         if(memberQueryRepository.duplicatedEmailCheck(email)) {
             throw new IllegalStateException("중복된 회원 입니다.");
@@ -47,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 
         // 검증
-        if(emailCheck(member, findMember) && passwordCheck(member, findMember)) {
+        if(userEmailAndPwdCheck(member, findMember)) {
             String token = jwtProvider.createToken(findMember);
             log.info("[token] = {}", token);
 
@@ -63,16 +66,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findMember(String jwt) throws JsonProcessingException {
+    public Member findMember(String jwt) {
         String s = jwtProvider.tokenPayloadExtract(jwt);
 
-        Long id = objectMapper.readValue(s, JwtObject.class).getId();
-
-        return getMember(id);
+        return getMember(jwtProvider.mapTokenToId(s));
     }
 
     private Member getMember(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+    }
+
+    private boolean userEmailAndPwdCheck(Member member, Member findMember) {
+        return emailCheck(member, findMember) && passwordEncoder.matches(member.getPassword(), findMember.getPassword());
     }
 }
