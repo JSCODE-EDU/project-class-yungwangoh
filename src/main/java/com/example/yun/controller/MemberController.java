@@ -45,7 +45,7 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) throws JsonProcessingException {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
 
         String token = memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 

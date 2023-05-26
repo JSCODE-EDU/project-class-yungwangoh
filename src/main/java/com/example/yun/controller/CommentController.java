@@ -16,22 +16,22 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comment")
+@RequestMapping("/api/boards")
 public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("")
-    public ResponseEntity<CommentResponseDto> createCommentApi(@RequestHeader("Authorizaiton") String jwt,
-                                                               @RequestBody @Valid CommentRequestDto commentRequestDto)
-                                                                throws JsonProcessingException {
+    @PostMapping("/{boardId}/comment")
+    public ResponseEntity<CommentResponseDto> createCommentApi(@RequestHeader("Authorization") String jwt,
+                                                               @PathVariable Long boardId,
+                                                               @RequestBody @Valid CommentRequestDto commentRequestDto) {
 
-        CommentResponseDto commentCreate = commentService.commentCreate(commentRequestDto.getBoardId(), jwt, commentRequestDto.getContent());
+        CommentResponseDto commentCreate = commentService.commentCreate(boardId, jwt, commentRequestDto.getContent());
 
         return new ResponseEntity<>(commentCreate, CREATED);
     }
 
-    @GetMapping("/{boardId}")
+    @GetMapping("/{boardId}/comments")
     public ResponseEntity<List<CommentResponseDto>> findCommentApi(@PathVariable Long boardId) {
         List<CommentResponseDto> commentResponseDtos = commentService.findCommentsBoardById(boardId);
 

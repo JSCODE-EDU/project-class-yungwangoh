@@ -21,6 +21,6 @@ public class GoodQueryDslRepository implements GoodQueryRepository {
                 .where(good.board.id.eq(boardId).and(good.member.id.eq(memberId)))
                 .join(good.member).fetchJoin()
                 .join(good.board).fetchJoin()
-                .fetchOne() != null;
+                .fetchFirst() != null;
     }
 }

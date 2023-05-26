@@ -29,6 +29,7 @@ public class Board extends BaseEntity {
         this.title = Title.titleCreate(title);
         this.content = Content.contentCreate(content);
         this.member = member;
+        this.good = 0L;
     }
 
     public static Board create(final String title, final String content, final Member member) {
@@ -51,9 +52,10 @@ public class Board extends BaseEntity {
         this.good++;
     }
     public void goodDown() {
+        this.good--;
+
         if(this.good < 0L) {
             throw new GoodOutOfLengthException(GOOD_OUT_OF_LENGTH.getMessage());
         }
-        this.good--;
     }
 }

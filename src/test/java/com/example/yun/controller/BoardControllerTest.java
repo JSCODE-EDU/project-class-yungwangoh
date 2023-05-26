@@ -5,8 +5,10 @@ import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
 import com.example.yun.repository.board.BoardRepository;
+import com.example.yun.repository.board.GoodRepository;
 import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.service.BoardService;
+import com.example.yun.service.GoodService;
 import com.example.yun.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
@@ -38,10 +40,13 @@ class BoardControllerTest {
     private MemberRepository memberRepository;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private GoodRepository goodRepository;
+    @Autowired
+    private GoodService goodService;
 
     private String token = "bearer ";
     private final String headerName = "Authorization";
-
     private String email;
 
     @BeforeEach
@@ -62,27 +67,38 @@ class BoardControllerTest {
     @DisplayName("성공")
     class Success {
 
-        @Test
+        @Nested
         @DisplayName("등록")
-        void boardCreateApiTest() throws Exception {
-            // given
-            String title = "안녕";
-            String content = "안녕하세요";
-            BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content, email);
+        class Create {
 
-            String s = objectMapper.writeValueAsString(boardRequestDto);
+            @Test
+            @DisplayName("등록")
+            void boardCreateApiTest() throws Exception {
+                // given
+                String title = "안녕";
+                String content = "안녕하세요";
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content, email);
 
-            // when
-            ResultActions resultActions = mockMvc.perform(post("/api/boards")
-                    .header(headerName, token)
-                    .content(s)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON));
+                String s = objectMapper.writeValueAsString(boardRequestDto);
 
-            // then
-            resultActions.andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.title").value(boardRequestDto.getTitle()))
-                    .andExpect(jsonPath("$.content").value(boardRequestDto.getContent()));
+                // when
+                ResultActions resultActions = mockMvc.perform(post("/api/boards")
+                        .header(headerName, token)
+                        .content(s)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+                // then
+                resultActions.andExpect(status().isCreated())
+                        .andExpect(jsonPath("$.title").value(boardRequestDto.getTitle()))
+                        .andExpect(jsonPath("$.content").value(boardRequestDto.getContent()));
+            }
+
+            @AfterEach
+            void initDB() {
+                boardRepository.deleteAll();
+            }
+
         }
 
         @Nested
@@ -247,11 +263,61 @@ class BoardControllerTest {
                 resultActions.andExpect(status().isNoContent())
                         .andDo(print());
             }
+
+            @AfterEach
+            void initDB() {
+                boardRepository.deleteAll();
+            }
         }
 
-        @AfterEach
-        void initDB() {
-            boardRepository.deleteAll();
+        @Nested
+        @DisplayName("좋아요")
+        class Good {
+
+            BoardResponseDto boardResponseDto;
+
+            @BeforeEach
+            void init() {
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
+
+                boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
+                        boardRequestDto.getContent(), boardRequestDto.getEmail());
+            }
+
+            @Test
+            @DisplayName("업 테스트")
+            void goodUpTest() throws Exception {
+                // given
+
+                // when
+                ResultActions resultActions = mockMvc.perform(get("/api/boards/{boardId}/up", boardResponseDto.getId())
+                        .header(headerName, token));
+
+                // then
+                resultActions.andExpect(status().isOk())
+                        .andDo(print());
+            }
+
+            @Test
+            @DisplayName("다운 테스트")
+            void goodDownTest() throws Exception {
+                // given
+                goodService.goodUp(token, boardResponseDto.getId());
+
+                // when
+                ResultActions resultActions = mockMvc.perform(get("/api/boards/{boardId}/down", boardResponseDto.getId())
+                        .header(headerName, token));
+
+                // then
+                resultActions.andExpect(status().isOk())
+                        .andDo(print());
+            }
+
+            @AfterEach
+            void initDB() {
+                goodRepository.deleteAll();
+                boardRepository.deleteAll();
+            }
         }
     }
 
@@ -332,11 +398,6 @@ class BoardControllerTest {
                 // then
                 resultActions.andExpect(status().isBadRequest());
             }
-        }
-
-        @AfterEach
-        void initDB() {
-            boardRepository.deleteAll();
         }
     }
 }

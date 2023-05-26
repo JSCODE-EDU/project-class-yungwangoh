@@ -1,8 +1,10 @@
 package com.example.yun.domain.board;
 
+import com.example.yun.exception.GoodOutOfLengthException;
 import com.example.yun.exception.StringValidationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -51,4 +53,21 @@ class BoardTest {
 
     }
 
+    @Nested
+    @DisplayName("좋아요")
+    class Good {
+
+        @Test
+        @DisplayName("좋아요 증가 감소 범위 예외 테스트")
+        void goodUpAndDownOutOfLengthExceptionTest() {
+            // given
+            Board board = Board.create("ㅎㅇ", "ㅎㅇ", null);
+
+            // when
+
+            // then
+            assertThatThrownBy(board::goodDown)
+                    .isInstanceOf(GoodOutOfLengthException.class);
+        }
+    }
 }

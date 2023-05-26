@@ -14,6 +14,7 @@ import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.repository.querydsl.GoodQueryRepository;
 import com.example.yun.service.GoodService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import static com.example.yun.exception.ExceptionControl.*;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class GoodServiceImpl implements GoodService {
 
     private final GoodRepository likeRepository;
@@ -43,6 +45,8 @@ public class GoodServiceImpl implements GoodService {
 
         board.goodUp();
 
+        log.info("service board = {} ", board);
+
         Good good = Good.goodCreate(member, board);
 
         likeRepository.save(good);
@@ -53,13 +57,16 @@ public class GoodServiceImpl implements GoodService {
     public void goodDown(String jwt, Long boardId) {
         Long memberId = jwtProvider.mapTokenToId(jwt);
 
-        if(likeQueryRepository.findGoodMemberIdAndBoardId(memberId, boardId)) {
-            throw new GoodInvalidatedException(GOOD_INVALIDATED.getMessage());
-        } else {
+        boolean check = likeQueryRepository.findGoodMemberIdAndBoardId(memberId, boardId);
+        log.info("check = {} ",check);
+
+        if(check) {
             Board board = boardRepository.findById(boardId)
                     .orElseThrow(() -> new NotFoundBoardException(NOT_FOUND_BOARD.getMessage()));
 
             board.goodDown();
+        } else {
+            throw new GoodInvalidatedException(GOOD_INVALIDATED.getMessage());
         }
     }
 }

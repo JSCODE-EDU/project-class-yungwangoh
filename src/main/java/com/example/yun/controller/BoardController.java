@@ -6,6 +6,7 @@ import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
 import com.example.yun.error.ErrorResult;
 import com.example.yun.service.BoardService;
+import com.example.yun.service.GoodService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,6 +33,7 @@ import static org.springframework.http.HttpStatus.*;
 public class BoardController {
 
     private final BoardService boardService;
+    private final GoodService goodService;
 
     @PostMapping("")
     @Operation(summary = "게시물 등록", description = "게시물을 등록 한다.")
@@ -147,5 +149,37 @@ public class BoardController {
         String boardDelete = boardService.boardDelete(boardId);
 
         return new ResponseEntity<>(boardDelete, NO_CONTENT);
+    }
+
+    @GetMapping("/{boardId}/up")
+    @Operation(summary = "좋아요", description = "게시물에 좋아요를 할 수 있다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "NO CONTENT"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    ResponseEntity<Void> goodUpApi(@RequestHeader("Authorization") String jwt,
+                                   @PathVariable final Long boardId) {
+
+        goodService.goodUp(jwt, boardId);
+
+        return new ResponseEntity<>(OK);
+    }
+
+    @GetMapping("/{boardId}/down")
+    @Operation(summary = "좋아요", description = "게시물에 좋아요를 취소할 수 있다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "NO CONTENT"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    ResponseEntity<Void> goodDownApi(@RequestHeader("Authorization") String jwt,
+                                     @PathVariable final Long boardId) {
+
+        goodService.goodDown(jwt, boardId);
+
+        return new ResponseEntity<>(OK);
     }
 }
