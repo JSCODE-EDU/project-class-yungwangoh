@@ -24,7 +24,6 @@ public class GoodServiceImpl implements GoodService {
 
     private final GoodRepository likeRepository;
     private final GoodQueryRepository likeQueryRepository;
-    private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
 
