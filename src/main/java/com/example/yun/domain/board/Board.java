@@ -2,7 +2,8 @@ package com.example.yun.domain.board;
 
 import com.example.yun.domain.BaseEntity;
 import com.example.yun.domain.member.Member;
-import com.example.yun.exception.GoodOutOfLengthException;
+import com.example.yun.exception.ExceptionControl;
+import com.example.yun.exception.GoodException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,7 +56,7 @@ public class Board extends BaseEntity {
         this.good--;
 
         if(this.good < 0L) {
-            throw new GoodOutOfLengthException(GOOD_OUT_OF_LENGTH.getMessage());
+            throw GOOD_OUT_OF_LENGTH.goodCreate();
         }
     }
 }

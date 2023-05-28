@@ -3,10 +3,6 @@ package com.example.yun.service.impl;
 import com.example.yun.domain.board.Board;
 import com.example.yun.domain.board.Good;
 import com.example.yun.domain.member.Member;
-import com.example.yun.exception.ExceptionControl;
-import com.example.yun.exception.GoodInvalidatedException;
-import com.example.yun.exception.NotFoundBoardException;
-import com.example.yun.exception.NotFoundMemberException;
 import com.example.yun.jwt.JwtProvider;
 import com.example.yun.repository.board.BoardRepository;
 import com.example.yun.repository.board.GoodRepository;
@@ -34,14 +30,13 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     @Transactional
-    public void goodUp(String jwt, Long boardId) {
-        Long memberId = jwtProvider.mapTokenToId(jwt);
+    public void goodUp(Long memberId, Long boardId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberException(NOT_FOUND_MEMBER.getMessage()));
+                .orElseThrow(NOT_FOUND_MEMBER::notFoundCreate);
 
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new NotFoundBoardException(NOT_FOUND_BOARD.getMessage()));
+                .orElseThrow(NOT_FOUND_BOARD::notFoundCreate);
 
         board.goodUp();
 
@@ -54,19 +49,18 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     @Transactional
-    public void goodDown(String jwt, Long boardId) {
-        Long memberId = jwtProvider.mapTokenToId(jwt);
+    public void goodDown(Long memberId, Long boardId) {
 
         boolean check = likeQueryRepository.findGoodMemberIdAndBoardId(memberId, boardId);
         log.info("check = {} ",check);
 
         if(check) {
             Board board = boardRepository.findById(boardId)
-                    .orElseThrow(() -> new NotFoundBoardException(NOT_FOUND_BOARD.getMessage()));
+                    .orElseThrow(NOT_FOUND_BOARD::notFoundCreate);
 
             board.goodDown();
         } else {
-            throw new GoodInvalidatedException(GOOD_INVALIDATED.getMessage());
+            throw GOOD_INVALIDATED.goodCreate();
         }
     }
 }

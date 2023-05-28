@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CommentService {
 
-    default CommentResponseDto commentCreate(Long boardId, String jwt, String content) {
+    default CommentResponseDto commentCreate(Long boardId, Long memberId, String content) {
         return null;
     }
 

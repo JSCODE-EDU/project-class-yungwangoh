@@ -1,5 +1,6 @@
 package com.example.yun.controller;
 
+import com.example.yun.custom.annotation.JwtMemberId;
 import com.example.yun.dto.BoardRequestDto;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.page.PageResponseDto;
@@ -162,10 +163,10 @@ public class BoardController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    ResponseEntity<Void> goodUpApi(@RequestHeader("Authorization") String jwt,
+    ResponseEntity<Void> goodUpApi(@JwtMemberId final Long memberId,
                                    @PathVariable final Long boardId) {
 
-        goodService.goodUp(jwt, boardId);
+        goodService.goodUp(memberId, boardId);
 
         return new ResponseEntity<>(OK);
     }
@@ -178,10 +179,10 @@ public class BoardController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    ResponseEntity<Void> goodDownApi(@RequestHeader("Authorization") String jwt,
+    ResponseEntity<Void> goodDownApi(@JwtMemberId final Long memberId,
                                      @PathVariable final Long boardId) {
 
-        goodService.goodDown(jwt, boardId);
+        goodService.goodDown(memberId, boardId);
 
         return new ResponseEntity<>(OK);
     }

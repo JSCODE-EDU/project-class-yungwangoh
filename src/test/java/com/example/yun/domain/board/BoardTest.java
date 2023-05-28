@@ -1,6 +1,6 @@
 package com.example.yun.domain.board;
 
-import com.example.yun.exception.GoodOutOfLengthException;
+import com.example.yun.exception.GoodException;
 import com.example.yun.exception.StringValidationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -67,7 +67,7 @@ class BoardTest {
 
             // then
             assertThatThrownBy(board::goodDown)
-                    .isInstanceOf(GoodOutOfLengthException.class);
+                    .isInstanceOf(GoodException.class);
         }
     }
 }

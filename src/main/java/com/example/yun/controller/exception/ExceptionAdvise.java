@@ -1,6 +1,8 @@
 package com.example.yun.controller.exception;
 
 import com.example.yun.error.ErrorResult;
+import com.example.yun.exception.GoodException;
+import com.example.yun.exception.NotFoundException;
 import com.example.yun.exception.StringValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,16 +17,16 @@ import javax.validation.ConstraintViolationException;
 
 @Slf4j
 @RestControllerAdvice("com.example.yun.controller")
-public class BoardException {
+public class ExceptionAdvise {
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @Operation(summary = "예외", description = "유효하지 않은 id 값의 예외")
-    @ApiResponse(responseCode = "404", description = "NOT FOUND")
-    public ResponseEntity<ErrorResult> notFoundException(IllegalArgumentException exception) {
+    @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
+    public ResponseEntity<ErrorResult> invalidIdException(IllegalArgumentException exception) {
         log.info("[exception]", exception);
 
-        return getErrorResultResponseEntity(HttpStatus.NOT_FOUND, exception);
+        return getErrorResultResponseEntity(HttpStatus.BAD_REQUEST, exception);
     }
 
     @ExceptionHandler
@@ -55,6 +57,26 @@ public class BoardException {
         log.info("[exception]", exception);
 
         return getErrorResultResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, exception);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @Operation(summary = "예외", description = "좋아요 예외 처리")
+    @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
+    public ResponseEntity<ErrorResult> goodException(GoodException exception) {
+        log.info("[exception]", exception);
+
+        return getErrorResultResponseEntity(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @Operation(summary = "예외", description = "회원 게시물 찾지 못했을 경우 처리")
+    @ApiResponse(responseCode = "404", description = "NOT_FOUND")
+    public ResponseEntity<ErrorResult> notFoundException(NotFoundException exception) {
+        log.info("[exception]", exception);
+
+        return getErrorResultResponseEntity(HttpStatus.NOT_FOUND, exception);
     }
 
     private static ResponseEntity<ErrorResult> getErrorResultResponseEntity(HttpStatus status, Exception exception) {

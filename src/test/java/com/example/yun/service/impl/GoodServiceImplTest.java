@@ -3,7 +3,7 @@ package com.example.yun.service.impl;
 import com.example.yun.domain.board.Board;
 import com.example.yun.domain.board.Good;
 import com.example.yun.domain.member.Member;
-import com.example.yun.exception.GoodInvalidatedException;
+import com.example.yun.exception.GoodException;
 import com.example.yun.jwt.JwtProvider;
 import com.example.yun.repository.board.BoardRepository;
 import com.example.yun.repository.board.GoodRepository;
@@ -45,6 +45,7 @@ class GoodServiceImplTest {
 
     private String jwt = "jwtjwtjwt";
     private Long boardId = 1L;
+    private Long memberId = 1L;
 
     @BeforeEach
     void init() {
@@ -62,7 +63,7 @@ class GoodServiceImplTest {
         given(goodRepository.save(any())).willReturn(good);
 
         // when
-        goodService.goodUp(jwt, boardId);
+        goodService.goodUp(memberId, boardId);
 
         // then
         then(goodRepository).should().save(any());
@@ -76,7 +77,7 @@ class GoodServiceImplTest {
 
         // when
         // then
-        assertThatThrownBy(() -> goodService.goodDown(jwt, boardId))
-                .isInstanceOf(GoodInvalidatedException.class);
+        assertThatThrownBy(() -> goodService.goodDown(memberId, boardId))
+                .isInstanceOf(GoodException.class);
     }
 }

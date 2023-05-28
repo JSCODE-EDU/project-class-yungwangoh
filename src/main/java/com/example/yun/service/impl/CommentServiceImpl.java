@@ -4,8 +4,6 @@ import com.example.yun.domain.Comment.Comment;
 import com.example.yun.domain.board.Board;
 import com.example.yun.domain.member.Member;
 import com.example.yun.dto.comment.CommentResponseDto;
-import com.example.yun.exception.NotFoundBoardException;
-import com.example.yun.exception.NotFoundMemberException;
 import com.example.yun.jwt.JwtProvider;
 import com.example.yun.repository.board.BoardRepository;
 import com.example.yun.repository.comment.CommentRepository;
@@ -18,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.yun.exception.ExceptionControl.*;
+import static com.example.yun.exception.ExceptionControl.NOT_FOUND_BOARD;
+import static com.example.yun.exception.ExceptionControl.NOT_FOUND_MEMBER;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -30,19 +29,16 @@ public class CommentServiceImpl implements CommentService {
     private final CommentQueryRepository commentQueryRepository;
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
-    private final JwtProvider jwtProvider;
 
     @Override
     @Transactional
-    public CommentResponseDto commentCreate(Long boardId, String jwt, String content) {
+    public CommentResponseDto commentCreate(Long boardId, Long memberId, String content) {
 
-        Long userId = jwtProvider.mapTokenToId(jwt);
-
-        Member member = memberRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundMemberException(NOT_FOUND_MEMBER.getMessage()));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NOT_FOUND_MEMBER::notFoundCreate);
 
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new NotFoundBoardException(NOT_FOUND_BOARD.getMessage()));
+                .orElseThrow(NOT_FOUND_BOARD::notFoundCreate);
 
         Comment comment = Comment.commentCreate(content, member, board);
 
@@ -55,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentResponseDto> findCommentsBoardById(Long boardId) {
 
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new NotFoundBoardException(NOT_FOUND_BOARD.getMessage()));
+                .orElseThrow(NOT_FOUND_BOARD::notFoundCreate);
 
         List<Comment> comments = commentQueryRepository.findCommentsByBoardId(board.getId());
 

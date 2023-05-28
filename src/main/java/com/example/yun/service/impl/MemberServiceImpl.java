@@ -1,13 +1,10 @@
 package com.example.yun.service.impl;
 
 import com.example.yun.domain.member.Member;
-import com.example.yun.jwt.JwtObject;
 import com.example.yun.jwt.JwtProvider;
 import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.repository.querydsl.MemberQueryRepository;
 import com.example.yun.service.MemberService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.yun.util.member.LoginCheckUtil.emailCheck;
-import static com.example.yun.util.member.LoginCheckUtil.passwordCheck;
 
 @Service
 @RequiredArgsConstructor
@@ -66,10 +62,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findMember(String jwt) {
-        String s = jwtProvider.tokenPayloadExtract(jwt);
-
-        return getMember(jwtProvider.mapTokenToId(s));
+    public Member findMember(Long id) {
+        return getMember(id);
     }
 
     private Member getMember(Long id) {

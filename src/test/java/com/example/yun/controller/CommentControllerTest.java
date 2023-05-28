@@ -1,6 +1,7 @@
 package com.example.yun.controller;
 
 import com.example.yun.dto.comment.CommentRequestDto;
+import com.example.yun.jwt.JwtProvider;
 import com.example.yun.repository.board.BoardRepository;
 import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.service.BoardService;
@@ -36,6 +37,8 @@ class CommentControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private JwtProvider jwtProvider;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -81,7 +84,9 @@ class CommentControllerTest {
         String token = memberService.login("qwer1234@naver.com", "qwer1234@A");
         String accessToken = "bearer " + token;
 
-        commentService.commentCreate(boardId, accessToken, content);
+        Long memberId = jwtProvider.mapTokenToId(accessToken);
+
+        commentService.commentCreate(boardId, memberId, content);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/api/boards/{boardId}/comments", boardId)
