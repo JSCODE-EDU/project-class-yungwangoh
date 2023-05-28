@@ -64,7 +64,7 @@ class BoardServiceImplTest {
             String title = "안녕하세요";
             String content = "안녕";
             String email = "qwer1234@naver.com";
-            BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content, email);
+            BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content);
 
             given(memberQueryRepository.findMemberByEmail(email)).willReturn(of(member));
             given(boardRepository.save(any())).willReturn(board);
@@ -73,7 +73,7 @@ class BoardServiceImplTest {
             BoardResponseDto boardResponseDto = boardService.boardCreate(
                     boardRequestDto.getTitle(),
                     boardRequestDto.getContent(),
-                    boardRequestDto.getEmail());
+                    member.getId());
 
             // then
             assertThat(boardRequestDto.getTitle()).isEqualTo(boardResponseDto.getTitle());

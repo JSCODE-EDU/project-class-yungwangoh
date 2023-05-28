@@ -35,7 +35,7 @@ public class PageNationMvcTest {
         token = memberService.login("qwer1234@naver.com", "qwer1234@A");
 
         for(int i = 0; i < 150; i++) {
-            boardService.boardCreate("ㅎㅇ", "ㅎㅇ", member.getEmail());
+            boardService.boardCreate("ㅎㅇ", "ㅎㅇ", member.getId());
         }
     }
 

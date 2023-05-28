@@ -20,7 +20,7 @@ public class MyArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(String.class) && parameter.hasParameterAnnotation(JwtMemberId.class);
+        return parameter.getParameterType().equals(Long.class) && parameter.hasParameterAnnotation(JwtMemberId.class);
     }
 
     @Override

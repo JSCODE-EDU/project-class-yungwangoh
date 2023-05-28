@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BoardService {
 
-    default BoardResponseDto boardCreate(String title, String content, String email) {
+    default BoardResponseDto boardCreate(String title, String content, Long memberId) {
         return null;
     }
 

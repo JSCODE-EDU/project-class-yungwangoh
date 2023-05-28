@@ -21,17 +21,12 @@ public class BoardRequestDto {
     @ApiModelProperty(value = "내용", example = "ㅎㅇ요", required = true)
     private String content;
 
-    @Email
-    @ApiModelProperty(value = "이메일", example = "sawew1234@google.com", required = true)
-    private String email;
-
-    private BoardRequestDto(final String title, final String content, final String email) {
+    private BoardRequestDto(final String title, final String content) {
         this.title = title;
         this.content = content;
-        this.email = email;
     }
 
-    public static BoardRequestDto boardRequestCreate(final String title, final String content, final String email) {
-        return new BoardRequestDto(title, content, email);
+    public static BoardRequestDto boardRequestCreate(final String title, final String content) {
+        return new BoardRequestDto(title, content);
     }
 }

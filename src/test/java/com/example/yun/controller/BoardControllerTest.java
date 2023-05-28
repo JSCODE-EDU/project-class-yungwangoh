@@ -4,6 +4,7 @@ import com.example.yun.dto.BoardRequestDto;
 import com.example.yun.dto.BoardResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
+import com.example.yun.jwt.JwtProvider;
 import com.example.yun.repository.board.BoardRepository;
 import com.example.yun.repository.board.GoodRepository;
 import com.example.yun.repository.member.MemberRepository;
@@ -44,10 +45,13 @@ class BoardControllerTest {
     private GoodRepository goodRepository;
     @Autowired
     private GoodService goodService;
+    @Autowired
+    private JwtProvider jwtProvider;
 
     private String token = "bearer ";
     private final String headerName = "Authorization";
     private String email;
+    private Long memberId;
 
     @BeforeEach
     void memberLoginInit() {
@@ -56,6 +60,8 @@ class BoardControllerTest {
 
         memberService.memberCreate(email, pwd);
         token += memberService.login(email, pwd);
+
+        memberId = jwtProvider.mapTokenToId(token);
     }
 
     @AfterEach
@@ -77,7 +83,7 @@ class BoardControllerTest {
                 // given
                 String title = "안녕";
                 String content = "안녕하세요";
-                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content, email);
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content);
 
                 String s = objectMapper.writeValueAsString(boardRequestDto);
 
@@ -109,10 +115,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요");
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent(), boardRequestDto.getEmail());
+                        boardRequestDto.getContent(), memberId);
             }
 
             @Test
@@ -179,10 +185,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요");
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent(), boardRequestDto.getEmail());
+                        boardRequestDto.getContent(), memberId);
             }
 
             @Test
@@ -243,10 +249,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요");
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent(), boardRequestDto.getEmail());
+                        boardRequestDto.getContent(), memberId);
             }
 
             @Test
@@ -278,10 +284,10 @@ class BoardControllerTest {
 
             @BeforeEach
             void init() {
-                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요", email);
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("안녕", "안녕하세요");
 
                 boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                        boardRequestDto.getContent(), boardRequestDto.getEmail());
+                        boardRequestDto.getContent(), memberId);
             }
 
             @Test
@@ -302,7 +308,7 @@ class BoardControllerTest {
             @DisplayName("다운 테스트")
             void goodDownTest() throws Exception {
                 // given
-                goodService.goodUp(token, boardResponseDto.getId());
+                goodService.goodUp(memberId, boardResponseDto.getId());
 
                 // when
                 ResultActions resultActions = mockMvc.perform(get("/api/boards/{boardId}/down", boardResponseDto.getId())
@@ -332,7 +338,7 @@ class BoardControllerTest {
             @DisplayName("공백 or 빈칸")
             void validationEmptyFailed() throws Exception {
                 // given
-                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("", "", email);
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate("", "");
                 String s = objectMapper.writeValueAsString(boardRequestDto);
 
                 // when
@@ -370,7 +376,7 @@ class BoardControllerTest {
                 // given
                 String overTitle = "aldfjghfjdkshgjghfdkghkjfdhgkfdgfd";
                 String content = "ㅎㅇ";
-                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(overTitle, content, email);
+                BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(overTitle, content);
                 String s = objectMapper.writeValueAsString(boardRequestDto);
 
                 // when

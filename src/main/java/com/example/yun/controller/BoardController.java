@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -47,12 +46,14 @@ public class BoardController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND", content = @Content(schema = @Schema(implementation = ErrorResult.class))),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    ResponseEntity<BoardResponseDto> boardCreateApi(@RequestBody @Valid final BoardRequestDto boardRequestDto) {
+    ResponseEntity<BoardResponseDto> boardCreateApi(@RequestBody @Valid final BoardRequestDto boardRequestDto,
+                                                    @JwtMemberId final Long memberId) {
 
         log.info("board request dto = {} ", boardRequestDto);
+        log.info("memberId = {}", memberId);
 
         BoardResponseDto boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                boardRequestDto.getContent(), boardRequestDto.getEmail());
+                boardRequestDto.getContent(), memberId);
 
         return new ResponseEntity<>(boardResponseDto, CREATED);
     }

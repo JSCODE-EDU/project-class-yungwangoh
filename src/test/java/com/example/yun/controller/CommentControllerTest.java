@@ -1,5 +1,6 @@
 package com.example.yun.controller;
 
+import com.example.yun.domain.member.Member;
 import com.example.yun.dto.comment.CommentRequestDto;
 import com.example.yun.jwt.JwtProvider;
 import com.example.yun.repository.board.BoardRepository;
@@ -50,8 +51,8 @@ class CommentControllerTest {
     @DisplayName("댓글 등록 테스트")
     void commentCreateApiTest() throws Exception {
         // given
-        memberService.memberCreate("qwer1234@naver.com", "qwer1234@A");
-        Long boardId = boardService.boardCreate("ㅎㅇ", "ㅎㅇ", "qwer1234@naver.com").getId();
+        Member member = memberService.memberCreate("qwer1234@naver.com", "qwer1234@A");
+        Long boardId = boardService.boardCreate("ㅎㅇ", "ㅎㅇ", member.getId()).getId();
 
         String content = "ㅎㅇ";
         CommentRequestDto commentRequestDto = CommentRequestDto.commentRequestCreate(content);
@@ -78,7 +79,8 @@ class CommentControllerTest {
     @DisplayName("게시물에 속한 댓글 모두 출력")
     void boardInCommentsOutput() throws Exception{
         // given
-        Long boardId = boardService.boardCreate("ㅎㅇ", "ㅎㅇ", "qwer1234@naver.com").getId();
+        Member member = memberService.memberCreate("qwer124@naver.com", "qwer1234@A");
+        Long boardId = boardService.boardCreate("ㅎㅇ", "ㅎㅇ", member.getId()).getId();
 
         String content = "ㅎㅇ";
         String token = memberService.login("qwer1234@naver.com", "qwer1234@A");
