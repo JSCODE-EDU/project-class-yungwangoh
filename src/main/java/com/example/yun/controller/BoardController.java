@@ -1,11 +1,14 @@
 package com.example.yun.controller;
 
+import com.example.yun.custom.annotation.JwtMemberId;
 import com.example.yun.dto.BoardRequestDto;
 import com.example.yun.dto.BoardResponseDto;
+import com.example.yun.dto.page.PageResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
 import com.example.yun.error.ErrorResult;
 import com.example.yun.service.BoardService;
+import com.example.yun.service.GoodService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +36,7 @@ import static org.springframework.http.HttpStatus.*;
 public class BoardController {
 
     private final BoardService boardService;
+    private final GoodService goodService;
 
     @PostMapping("")
     @Operation(summary = "게시물 등록", description = "게시물을 등록 한다.")
@@ -41,12 +46,14 @@ public class BoardController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND", content = @Content(schema = @Schema(implementation = ErrorResult.class))),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
-    ResponseEntity<BoardResponseDto> boardCreateApi(@RequestBody @Valid final BoardRequestDto boardRequestDto) {
+    ResponseEntity<BoardResponseDto> boardCreateApi(@RequestBody @Valid final BoardRequestDto boardRequestDto,
+                                                    @JwtMemberId final Long memberId) {
 
         log.info("board request dto = {} ", boardRequestDto);
+        log.info("memberId = {}", memberId);
 
         BoardResponseDto boardResponseDto = boardService.boardCreate(boardRequestDto.getTitle(),
-                boardRequestDto.getContent(), boardRequestDto.getEmail());
+                boardRequestDto.getContent(), memberId);
 
         return new ResponseEntity<>(boardResponseDto, CREATED);
     }
@@ -147,5 +154,56 @@ public class BoardController {
         String boardDelete = boardService.boardDelete(boardId);
 
         return new ResponseEntity<>(boardDelete, NO_CONTENT);
+    }
+
+    @GetMapping("/{boardId}/up")
+    @Operation(summary = "좋아요", description = "게시물에 좋아요를 할 수 있다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    ResponseEntity<Void> goodUpApi(@JwtMemberId final Long memberId,
+                                   @PathVariable final Long boardId) {
+
+        goodService.goodUp(memberId, boardId);
+
+        return new ResponseEntity<>(OK);
+    }
+
+    @GetMapping("/{boardId}/down")
+    @Operation(summary = "좋아요", description = "게시물에 좋아요를 취소할 수 있다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    ResponseEntity<Void> goodDownApi(@JwtMemberId final Long memberId,
+                                     @PathVariable final Long boardId) {
+
+        goodService.goodDown(memberId, boardId);
+
+        return new ResponseEntity<>(OK);
+    }
+
+    @GetMapping("/page/{pageNum}")
+    @Operation(summary = "페이지 네이션", description = "페이지 네이션")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "NO CONTENT"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
+    ResponseEntity<PageResponseDto> boardPaginationApi(@PathVariable int pageNum) {
+
+        PageRequest pageRequest = PageRequest.of(pageNum, 10);
+
+        log.info("[pageRequest] = {}", pageRequest);
+
+        PageResponseDto pageResponseDto = boardService.boardPagination(pageRequest);
+
+        return new ResponseEntity<>(pageResponseDto, OK);
     }
 }

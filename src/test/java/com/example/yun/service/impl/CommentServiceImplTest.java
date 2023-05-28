@@ -4,18 +4,12 @@ import com.example.yun.domain.Comment.Comment;
 import com.example.yun.domain.board.Board;
 import com.example.yun.domain.member.Member;
 import com.example.yun.dto.comment.CommentResponseDto;
-import com.example.yun.exception.ExceptionControl;
-import com.example.yun.exception.NotFoundBoardException;
-import com.example.yun.exception.NotFoundMemberException;
-import com.example.yun.jwt.JwtObject;
+import com.example.yun.exception.NotFoundException;
 import com.example.yun.jwt.JwtProvider;
-import com.example.yun.repository.BoardRepository;
+import com.example.yun.repository.board.BoardRepository;
 import com.example.yun.repository.comment.CommentRepository;
 import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.repository.querydsl.CommentQueryRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -26,7 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static com.example.yun.exception.ExceptionControl.*;
+import static com.example.yun.exception.ExceptionControl.NOT_FOUND_BOARD;
+import static com.example.yun.exception.ExceptionControl.NOT_FOUND_MEMBER;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -69,7 +64,7 @@ class CommentServiceImplTest {
             given(commentRepository.save(any())).willReturn(comment);
 
             // when
-            CommentResponseDto commentCreate = commentService.commentCreate(2L, "gfdsgs", "ㅎㅇ");
+            CommentResponseDto commentCreate = commentService.commentCreate(2L, member.getId(), "ㅎㅇ");
 
             // then
             assertThat(commentCreate.getContent()).isEqualTo("ㅎㅇ");
@@ -109,13 +104,13 @@ class CommentServiceImplTest {
             @DisplayName("등록할 때 회원을 찾지 못한 경우 예외")
             void commentCreateNotFoundMember() {
                 // given
-                given(memberRepository.findById(any())).willThrow(new NotFoundMemberException(NOT_FOUND_MEMBER.getMessage()));
+                given(memberRepository.findById(any())).willThrow(new NotFoundException(NOT_FOUND_MEMBER.getMessage()));
 
                 // when
 
                 // then
-                assertThatThrownBy(() -> commentService.commentCreate(board.getId(), "gdfgsfdg", "ㅎㅇ"))
-                        .isInstanceOf(NotFoundMemberException.class)
+                assertThatThrownBy(() -> commentService.commentCreate(board.getId(), member.getId(), "ㅎㅇ"))
+                        .isInstanceOf(NotFoundException.class)
                         .hasMessageContaining(NOT_FOUND_MEMBER.getMessage());
             }
 
@@ -124,13 +119,13 @@ class CommentServiceImplTest {
             void commentCreateNotFoundBoard() {
                 // given
                 given(memberRepository.findById(any())).willReturn(of(member));
-                given(boardRepository.findById(any())).willThrow(new NotFoundBoardException(NOT_FOUND_BOARD.getMessage()));
+                given(boardRepository.findById(any())).willThrow(new NotFoundException(NOT_FOUND_BOARD.getMessage()));
 
                 // when
 
                 // then
-                assertThatThrownBy(() -> commentService.commentCreate(null, "gfdgdfgg","ㅎㅇ"))
-                        .isInstanceOf(NotFoundBoardException.class)
+                assertThatThrownBy(() -> commentService.commentCreate(null, member.getId(),"ㅎㅇ"))
+                        .isInstanceOf(NotFoundException.class)
                         .hasMessageContaining(NOT_FOUND_BOARD.getMessage());
 
             }
@@ -150,7 +145,7 @@ class CommentServiceImplTest {
 
                 // then
                 assertThatThrownBy(() -> commentService.findCommentsBoardById(100L))
-                        .isInstanceOf(NotFoundBoardException.class)
+                        .isInstanceOf(NotFoundException.class)
                         .hasMessageContaining(NOT_FOUND_BOARD.getMessage());
             }
         }

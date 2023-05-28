@@ -3,13 +3,18 @@ package com.example.yun.service.impl;
 import com.example.yun.domain.board.Board;
 import com.example.yun.domain.member.Member;
 import com.example.yun.dto.BoardResponseDto;
+import com.example.yun.dto.page.PageResponseDto;
 import com.example.yun.exception.BoardMessage;
-import com.example.yun.repository.BoardRepository;
+import com.example.yun.exception.ExceptionControl;
+import com.example.yun.repository.board.BoardRepository;
+import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
 import com.example.yun.repository.querydsl.MemberQueryRepository;
 import com.example.yun.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +23,7 @@ import java.util.Optional;
 
 import static com.example.yun.domain.board.Content.contentCreate;
 import static com.example.yun.domain.board.Title.titleCreate;
+import static com.example.yun.exception.ExceptionControl.*;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
@@ -29,22 +35,23 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardQueryRepository boardQueryRepository;
-    private final MemberQueryRepository memberQueryRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 게시물 등록
      *
      * @param title   제목
      * @param content 내용
-     * @param email 유저 이메일
      * @return 게시물 응답 Dto(id, title, content)
      */
     @Override
     @Transactional
-    public BoardResponseDto boardCreate(String title, String content, String email) {
+    public BoardResponseDto boardCreate(String title, String content, Long memberId) {
 
-        Member member = memberQueryRepository.findMemberByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+        log.info("memberId = {}", memberId);
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NOT_FOUND_MEMBER::notFoundCreate);
 
         Board board = Board.create(title, content, member);
 
@@ -171,6 +178,13 @@ public class BoardServiceImpl implements BoardService {
         return responseDtosCreate(boards);
     }
 
+    @Override
+    public PageResponseDto boardPagination(Pageable pageable) {
+        Page<Board> boards = boardQueryRepository.boardPageNation(pageable);
+
+        return PageResponseDto.pageCreate(boards);
+    }
+
     /**
      * 게시물 찾기 -> 없으면 예외
      * @param id 게시물 id
@@ -178,7 +192,7 @@ public class BoardServiceImpl implements BoardService {
      */
     private Optional<Board> getBoard(Long id) {
         return of(boardRepository.findById(id))
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 조회할 수 없습니다."));
+                .orElseThrow(NOT_FOUND_BOARD::notFoundCreate);
     }
 
     /**

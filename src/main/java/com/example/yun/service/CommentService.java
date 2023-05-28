@@ -1,13 +1,12 @@
 package com.example.yun.service;
 
 import com.example.yun.dto.comment.CommentResponseDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 
 public interface CommentService {
 
-    default CommentResponseDto commentCreate(Long boardId, String jwt, String content) throws JsonProcessingException {
+    default CommentResponseDto commentCreate(Long boardId, Long memberId, String content) {
         return null;
     }
 

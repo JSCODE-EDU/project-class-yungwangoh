@@ -4,10 +4,11 @@ import com.example.yun.domain.board.Board;
 import com.example.yun.domain.member.Member;
 import com.example.yun.dto.BoardRequestDto;
 import com.example.yun.dto.BoardResponseDto;
+import com.example.yun.dto.page.PageResponseDto;
 import com.example.yun.dto.update.BoardContentUpdateDto;
 import com.example.yun.dto.update.BoardTitleUpdateDto;
 import com.example.yun.exception.BoardMessage;
-import com.example.yun.repository.BoardRepository;
+import com.example.yun.repository.board.BoardRepository;
 import com.example.yun.repository.querydsl.BoardQueryRepository;
 import com.example.yun.repository.querydsl.MemberQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +64,7 @@ class BoardServiceImplTest {
             String title = "안녕하세요";
             String content = "안녕";
             String email = "qwer1234@naver.com";
-            BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content, email);
+            BoardRequestDto boardRequestDto = BoardRequestDto.boardRequestCreate(title, content);
 
             given(memberQueryRepository.findMemberByEmail(email)).willReturn(of(member));
             given(boardRepository.save(any())).willReturn(board);
@@ -69,7 +73,7 @@ class BoardServiceImplTest {
             BoardResponseDto boardResponseDto = boardService.boardCreate(
                     boardRequestDto.getTitle(),
                     boardRequestDto.getContent(),
-                    boardRequestDto.getEmail());
+                    member.getId());
 
             // then
             assertThat(boardRequestDto.getTitle()).isEqualTo(boardResponseDto.getTitle());

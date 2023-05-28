@@ -1,5 +1,6 @@
 package com.example.yun.controller;
 
+import com.example.yun.custom.annotation.JwtMemberId;
 import com.example.yun.domain.member.Member;
 import com.example.yun.dto.member.MemberRequestDto;
 import com.example.yun.dto.member.MemberResponseDto;
@@ -37,15 +38,15 @@ public class MemberController {
     }
 
     @GetMapping("")
-    public ResponseEntity<MemberResponseDto> findMemberApi(@RequestHeader("Authorization") String jwt) throws JsonProcessingException {
+    public ResponseEntity<MemberResponseDto> findMemberApi(@JwtMemberId Long memberId) {
 
-        Member member = memberService.findMember(jwt);
+        Member member = memberService.findMember(memberId);
 
         return new ResponseEntity<>(create(member), OK);
     }
 
     @GetMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) throws JsonProcessingException {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
 
         String token = memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 

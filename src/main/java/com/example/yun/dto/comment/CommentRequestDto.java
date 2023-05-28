@@ -11,14 +11,12 @@ import javax.validation.constraints.Email;
 public class CommentRequestDto {
 
     private String content;
-    private Long boardId;
 
-    private CommentRequestDto(String content, Long boardId) {
+    private CommentRequestDto(String content) {
         this.content = content;
-        this.boardId = boardId;
     }
 
-    public static CommentRequestDto commentRequestCreate(String content, Long boardId) {
-        return new CommentRequestDto(content, boardId);
+    public static CommentRequestDto commentRequestCreate(String content) {
+        return new CommentRequestDto(content);
     }
 }

@@ -21,9 +21,6 @@ public class Password {
     }
 
     public static Password pwdCreate(String password) {
-        if(pwdValidationCheck(password)) {
-            return new Password(password);
-        }
-        return null;
+        return new Password(password);
     }
 }
