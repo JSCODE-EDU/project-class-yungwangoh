@@ -1,6 +1,8 @@
 package com.example.yun.service.impl;
 
 import com.example.yun.domain.member.Member;
+import com.example.yun.exception.ExceptionControl;
+import com.example.yun.exception.LoginException;
 import com.example.yun.jwt.JwtProvider;
 import com.example.yun.repository.member.MemberRepository;
 import com.example.yun.repository.querydsl.MemberQueryRepository;
@@ -11,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.yun.exception.ExceptionControl.*;
 import static com.example.yun.util.member.LoginCheckUtil.emailCheck;
 
 @Service
@@ -43,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = Member.create(email, pwd);
 
         Member findMember = memberQueryRepository.findMemberByEmail(member.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+                .orElseThrow(NOT_FOUND_MEMBER::notFoundCreate);
 
         // 검증
         if(userEmailAndPwdCheck(member, findMember)) {
@@ -52,7 +55,7 @@ public class MemberServiceImpl implements MemberService {
 
             return token;
         } else {
-            throw new IllegalArgumentException("로그인을 할 수 없습니다.");
+            throw new LoginException(LOG_IN_FAILED.getMessage());
         }
     }
 

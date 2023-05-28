@@ -198,7 +198,7 @@ public class BoardController {
     })
     ResponseEntity<PageResponseDto> boardPaginationApi(@PathVariable int pageNum) {
 
-        PageRequest pageRequest = PageRequest.of(pageNum, 100);
+        PageRequest pageRequest = PageRequest.of(pageNum, 10);
 
         log.info("[pageRequest] = {}", pageRequest);
 
