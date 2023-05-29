@@ -72,7 +72,7 @@ public class JwtProvider {
     public boolean tokenExpiredCheck(String jwt) {
         String token = getFormatToken(jwt);
 
-        if(token == null || token.equals("") || mapTokenToId(token) == null)
+        if(token == null || token.equals(""))
             return false;
 
         try {
