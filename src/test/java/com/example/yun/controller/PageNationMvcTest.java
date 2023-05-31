@@ -40,7 +40,7 @@ public class PageNationMvcTest {
     }
 
     @Test
-    @DisplayName("페이지 네이션 테스트 100개의 게시물 기준으로 페이지 2개 나누어지는지 확인")
+    @DisplayName("페이지 네이션 테스트 150개 게시물에서 10개 씩 15개로 나누어 지는지 확인")
     void paginationTest() throws Exception {
         // given
         String accessToken = "bearer " + token;
@@ -51,7 +51,7 @@ public class PageNationMvcTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.boardResponseDtos.length()").value(100))
-                .andExpect(jsonPath("$.pageCount").value(2));
+                .andExpect(jsonPath("$.boardResponseDtos.length()").value(10))
+                .andExpect(jsonPath("$.pageCount").value(15));
     }
 }
